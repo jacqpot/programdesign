@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  BodyPart: MyString
+  fatigueRating: MyString
+  name: MyString
+  desciption: MyString
+
+two:
+  BodyPart: MyString
+  fatigueRating: MyString
+  name: MyString
+  desciption: MyString
