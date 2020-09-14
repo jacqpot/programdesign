@@ -11,9 +11,9 @@ class ExercisesController < ApplicationController
   def index
     @exercises = Exercise.all
     options = {
-      include: [:workout]
+      include: [:workouts]
     }
-    render json: WorkoutSerializer.new(@exercises)
+    render json: ExerciseSerializer.new(@exercises, options)
   end
   # def show
   #   options = {
@@ -24,9 +24,9 @@ class ExercisesController < ApplicationController
   # GET /exercises/1
   def show
     options = {
-      include: [:workout]
+      include: [:workouts]
     }
-    render json: WorkoutSerializer.new(@exercise, options)
+    render json: ExerciseSerializer.new(@exercise, options)
   end
 
   # POST /exercises
