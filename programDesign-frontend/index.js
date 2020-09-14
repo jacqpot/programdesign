@@ -93,7 +93,7 @@ function editBlog(e) {
     
     //     editedBlogId = this.id;
     // debugger;
-    //   }
+}
 
 function renderProgramForm() {
     const programForm = document.getElementById('program-form');
@@ -111,11 +111,11 @@ function renderProgramForm() {
         <input type="submit" value="Create">
     </form><br>
     `
-    programForm.addEventListener("submit", programFormSubmission)
+    programForm.addEventListener("submit", programFormSubmission(e))
 }
 
-function programFormSubmission(){
-    
+function programFormSubmission(e){
+
 }
 
 // function createForm(){
