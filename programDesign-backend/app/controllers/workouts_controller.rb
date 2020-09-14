@@ -1,6 +1,7 @@
 class WorkoutsController < ApplicationController
   before_action :set_workout, only: [:show, :update, :destroy]
 
+  
   # GET /workouts
   def index
     @workouts = Workout.all
@@ -10,7 +11,10 @@ class WorkoutsController < ApplicationController
 
   # GET /workouts/1
   def show
-    render json: @workout
+    options = {
+      include: [:program, :exercise]
+    }
+    render json: WorkoutSerializer.new(@workout, options)
   end
 
   # POST /workouts
