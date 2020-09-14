@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", callOnLoad)
 
 
 function callOnLoad() {
-    loadPrograms()
+    loadPrograms();
     newbtn.addEventListener('click', renderProgramForm)
 }
 
@@ -95,43 +95,43 @@ function editBlog(e) {
     // debugger;
     //   }
 
-    function renderProgramForm(){
-        const main = document.getElementById('main')
-        const div = document.createElement('div');
-        const form = document.createElement('form');
-            form.id = "program-form"
-        const title = document.createElement('input');
-            title.type = "string"
-            title.name = "program-title"
-            title.id = "program-title"
-        const tLabel = document.createElement('label');
-            tLabel.for = "program-title"
-        const startdate = document.createElement('input');
-        const sdLabel = document.createElement('label');
-        const split = document.createElement('input');
-        const sLabel = document.createElement('label');
-        const workoutsPerWeek = document.createElement('input');
-        const wpwLabel = document.createElement('label');
-        const weeklyVolume = document.createElement('input');
-        const vLabel = document.createElement('label');
-        const goal = document.createElement('input');
-        const gLabel = document.createElement('label');
-        const length = document.createElement('input');
-        const lLabel = document.createElement('label');
-
+function renderProgramForm() {
+    const programForm = document.getElementById('program-form');
+    programForm.innerHTML += 
+    `
+    <h1>Create Program</h1>
+    <form>
+        Title: <input type="text" id="title"><br>
+        Split: <input type="text" id="split"><br>
+        length in weeks: <input type="integer" id="length"><br>
+        Goal: <input type="integer" id="goal"><br>
+        Weekly Volume: <input type="integer" id="weeklyVolume"><br>
+        Workouts Per Week: <input type="integer" id="workoutsPerWeek"><br>
+        Start Date: <input type="date" id="startdate"><br>
+        <input type="submit" value="Create">
+    </form><br>
+    `
+    programForm.addEventListener("submit", programFormSubmission)
 }
 
-function createProgram(e) {
-    e.preventDefault();
-    if(editing) {
-        updateBlog();
-    } 
-    else {
-        const strongParams = {
-            program: {
-                startdate: programTitle().value
-                
-            }
-        }
-    }
+function programFormSubmission(){
+    
 }
+
+// function createForm(){
+//     let subscribersForm = document.getElementById("subscribers-form")
+//     subscribersForm.innerHTML += 
+//     `
+//     <h1>
+//     Create Subscriber:
+//     </h1>
+//     <form>
+//        Your Photo URL: <input type="text" id="photo"> <br>   
+//        Username: <input type="text" id="username"> <br>   
+//        Email: <input type="text" id="email"> <br>
+//        <input type="submit" value="Create" > 
+//     </form> 
+//     <br>
+//     `
+//     subscribersForm.addEventListener("submit", subscriberFormSubmission) 
+// }
