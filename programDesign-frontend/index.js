@@ -15,7 +15,7 @@ function callOnLoad() {
     loadPrograms();
     programFormContainer().innerHTML = ''
     newProgramBtn().addEventListener("click", (event) => {renderProgramForm()});
-    
+     
 
       
 }
@@ -66,7 +66,7 @@ function displayProgram(program, id) {
     h1.innerText = program.title;
     date.innerText = `Started on: ${program.startdate}`
     h4.innerText = program.split;
-    p.innerText = `This is a ${program['goal']} Program. Using a ${program.split}, and will be running for ${program.length} weeks. \n At ${program.workoutsPerWeek} workouts per week each muscle group should hit ${program.weeklyVolume} sets per week.`
+    p.innerText = `This is a ${program['goal']} Program. Using a ${program.split}, and will be running for ${program.length} weeks. \n At ${program.workoutsPerWeek} workouts per week each muscle group shoh1d hit ${program.weeklyVolume} sets per week.`
     
     div.appendChild(h1);
     div.appendChild(date)
@@ -95,33 +95,53 @@ function editProgram(e){
 
 
 function renderProgramForm() {
-    var elems = document.querySelectorAll('select');
-    var instances = M.FormSelect.init(elems);
+
     programFormContainer().innerHTML =  
     `
     <h1>Create Program</h1>
     <form>
         Title: <input type="text" id="ptitle"><br>
 
-        <div class="input-field" id="split">
+        <div class="input-field" id="split" name="split">
             <select>
                 <option value="" disabled selected>Choose your option</option>
                 <option value="1">Total Body</option>
                 <option value="2">Push, Pull, Legs</option>
-                <option value="3">Upper Lower</option>
-                <option value="3">Body Part Split</option>
+                <option value="3">Upper, Lower</option>
+                <option value="4">Body Part Split</option>
             </select>
             <label>Split:</label>
         </div>
-        length in weeks: <input type="integer" id="length"><br>
-        Goal: <input type="integer" id="goal"><br>
+        <br>
+        <div class="input-field" id="length" name="length">
+            <select>
+                <option value="" disabled selected>Choose your option</option>
+                <option value="1">4 weeks</option>
+                <option value="2">8 weeks</option>
+                <option value="3">12 weeks</option>
+            </select>
+            <label>length:</label>
+        </div>
+        <div class="input-field" id="goal" name="goal">
+        <select>
+            <option value="" disabled selected>Choose your option</option>
+            <option value="1">Power</option>
+            <option value="2">Strength</option>
+            <option value="3">Hypertrophy</option>
+            <option value="4">Endurance</option>
+            <option value="5">Stability</option>
+        </select>
+        <label>Goal:</label>
+    </div>
         Weekly Volume: <input type="integer" id="weeklyVolume"><br>
         Workouts Per Week: <input type="integer" id="workoutsPerWeek"><br>
         Start Date: <input type="date" id="startdate"><br>
         <input type="submit" value="Create">
     </form>
     `
+    $('select').formSelect();
     programFormContainer().addEventListener("submit", (event) => {programFormSubmission(event)})
+
 }
 
 function programFormSubmission(event){
@@ -156,11 +176,11 @@ function programFormSubmission(event){
     })
     .then(resp => resp.json())
     .then(program => {
-        debugger;
+        // debugger;
         Program.create(program.id, program.title, program.split, program.length, program.goal, program.weeklyVolume, program.workoutsPerWeek, program.startdate)
         displayProgram(Program.all.last)
     })
-
+    debugger;
     programFormContainer().innerHTML = ""
 }
 
@@ -180,10 +200,41 @@ function getProgramDetails(id){
         return resp.json()
     })
     .catch(errors => console.log(errors))
-    .then(program => displayChosenProgramWorkouts(program))
+    .then(program => displayChosenProgram(program))
 }
 
 function displayChosenProgram(program){
-    debugger;
+
     displayProgram(program.data.attributes, program.id)
+    program.included.forEach(workout => displayProgramWorkouts(workout.attributes, workout.id))
+    
 };
+
+function displayProgramWorkouts(workout, id){
+    // debugger;
+    const workoutList = document.getElementById('workouts');
+    const div = document.createElement('div');
+    const description = document.createElement('h1');
+    const warmUp = document.createElement('h4');
+    const date = document.createElement('p');
+    const volume = document.createElement('p');
+    const view = document.createElement("button");
+    description.innerText = workout.description;
+    warmUp.innerText = workout.warmUp;
+    date.innerText = workout.date;
+    volume.innerText = workout.volume;
+    
+    view.classList.add('btn');
+    view.innerText = 'view';
+    view.id = id;
+    view.addEventListener('click', (e) => {viewWorkout(e)})
+
+    div.appendChild(description);
+    div.appendChild(warmUp);
+    div.appendChild(date);
+    div.appendChild(volume);
+    workoutList.appendChild(div);
+}
+function viewWorkout(e){
+
+}
