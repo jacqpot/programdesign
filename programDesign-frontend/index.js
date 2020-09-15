@@ -4,7 +4,7 @@ const programList = () => document.getElementById('program-list')
 const newProgramBtn = () => document.getElementById('new-program')
 const baseUrl = 'http://localhost:3000';
 const programFormContainer = () => document.getElementById("programFormContainer");
-let addProgram = false;
+
 
 
 document.addEventListener("DOMContentLoaded", callOnLoad)
@@ -43,7 +43,7 @@ function displayProgram(program, id) {
     const p = document.createElement('p');
     const deleteButton = document.createElement('button');
     const editButton = document.createElement('button');
-    
+    const view = document.createElement('button')
     deleteButton.classList.add('btn');
     deleteButton.innerText = 'delete'
     deleteButton.id = id;
@@ -54,6 +54,10 @@ function displayProgram(program, id) {
     editButton.id = id;
     editButton.addEventListener('click', editProgram)
     
+    view.classList.add('btn');
+    view.innerText = 'view';
+    view.id = id;
+    view.addEventListener('click', (e) => {renderProgramWorkouts(e)})
     
     h1.innerText = program.title;
     h4.innerText = program.split;
@@ -64,7 +68,7 @@ function displayProgram(program, id) {
     div.appendChild(p);
     div.appendChild(deleteButton);
     div.appendChild(editButton);
-    
+    div.appendChild(view);
     programList().appendChild(div);
 };
 
@@ -143,20 +147,6 @@ function programFormSubmission(event){
     programFormContainer().innerHTML = ""
 }
 
-// function createForm(){
-//     let subscribersForm = document.getElementById("subscribers-form")
-//     subscribersForm.innerHTML += 
-//     `
-//     <h1>
-//     Create Subscriber:
-//     </h1>
-//     <form>
-//        Your Photo URL: <input type="text" id="photo"> <br>   
-//        Username: <input type="text" id="username"> <br>   
-//        Email: <input type="text" id="email"> <br>
-//        <input type="submit" value="Create" > 
-//     </form> 
-//     <br>
-//     `
-//     subscribersForm.addEventListener("submit", subscriberFormSubmission) 
-// }
+function renderProgramWorkouts(e){
+    console.log(e.target.parentNode)
+}
