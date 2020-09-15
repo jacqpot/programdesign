@@ -1,9 +1,9 @@
 const introduction = () => document.getElementById('title');
 const programTitle = () => document.querySelector()
 const programList = () => document.getElementById('program-list')
-const newProgram = () => document.getElementById('new-program')
+const newProgramBtn = document.getElementById('new-program')
 const baseUrl = 'http://localhost:3000';
-const programFormContainer = document.querySelector("#programFormContainer");
+const programFormContainer = document.getElementById("programFormContainer");
 let addProgram = false;
 
 
@@ -13,15 +13,7 @@ document.addEventListener("DOMContentLoaded", callOnLoad)
 
 function callOnLoad() {
     loadPrograms();
-    newProgram.addEventListener("click", () => {
-  addProgram = !addProgram;
-  if (addProgram) {
-      programFormContainer.style.display = "block";
-      renderProgramForm()
-    } else {
-    programFormContainer.style.display = "none";
-  }
-});
+    newProgramBtn.addEventListener("click", renderProgramForm());
 
 }
 
@@ -91,7 +83,7 @@ function editProgram(e){
 
 
 function renderProgramForm() {
-    const programFormContainer = document.getElementById('new-program');
+    
     programFormContainer.innerHTML += 
     `
     <h1>Create Program</h1>
@@ -104,13 +96,13 @@ function renderProgramForm() {
         Workouts Per Week: <input type="integer" id="workoutsPerWeek"><br>
         Start Date: <input type="date" id="startdate"><br>
         <input type="submit" value="Create">
-    </form><br>
+    </form>
     `
-    programForm.addEventListener("submit", programFormSubmission())
+    programFormContainer.addEventListener("submit", programFormSubmission(e))
 }
 
-function programFormSubmission(){
-    event.preventDefault()
+function programFormSubmission(e){
+    e.preventDefault()
     let title = document.getElementById("title").value 
     let split = document.getElementById("split").value 
     let length = document.getElementById("length").value 
