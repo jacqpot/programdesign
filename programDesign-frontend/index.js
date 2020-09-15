@@ -1,9 +1,9 @@
 const introduction = () => document.getElementById('title');
 const programTitle = () => document.querySelector()
 const programList = () => document.getElementById('program-list')
-const newProgramBtn = document.getElementById('new-program')
+const newProgramBtn = () => document.getElementById('new-program')
 const baseUrl = 'http://localhost:3000';
-const programFormContainer = document.getElementById("programFormContainer");
+const programFormContainer = () => document.getElementById("programFormContainer");
 let addProgram = false;
 
 
@@ -13,7 +13,8 @@ document.addEventListener("DOMContentLoaded", callOnLoad)
 
 function callOnLoad() {
     loadPrograms();
-    newProgramBtn.addEventListener("click", renderProgramForm());
+    programFormContainer().innerHTML = ''
+    newProgramBtn().addEventListener("click", (event) => {renderProgramForm()});
 
 }
 
@@ -30,11 +31,11 @@ function loadPrograms() {
 };
 
 function displayPrograms(programs){
-    programs.data.forEach(program => displayProgram(program.attributes))
+    programs.data.forEach(program => displayProgram(program.attributes, program.id))
 };
 
 
-function displayProgram(program) {
+function displayProgram(program, id) {
 
     const div = document.createElement('div');
     const h1 = document.createElement('h1');
@@ -45,12 +46,12 @@ function displayProgram(program) {
     
     deleteButton.classList.add('btn');
     deleteButton.innerText = 'delete'
-    deleteButton.id = program.id;
+    deleteButton.id = id;
     deleteButton.addEventListener('click', deleteProgram)
     
     editButton.classList.add('btn');
     editButton.innerText = 'edit';
-    editButton.id = program.id;
+    editButton.id = id;
     editButton.addEventListener('click', editProgram)
     
     
@@ -72,6 +73,7 @@ function deleteProgram(e){
     fetch(`${baseUrl}/programs/${programId}`,{
         method: 'DELETE'
     })
+    debugger;
     this.location.reload()
 }
 
@@ -84,11 +86,11 @@ function editProgram(e){
 
 function renderProgramForm() {
     
-    programFormContainer.innerHTML += 
+    programFormContainer().innerHTML =  
     `
     <h1>Create Program</h1>
     <form>
-        Title: <input type="text" id="title"><br>
+        Title: <input type="text" id="ptitle"><br>
         Split: <input type="text" id="split"><br>
         length in weeks: <input type="integer" id="length"><br>
         Goal: <input type="integer" id="goal"><br>
@@ -98,12 +100,12 @@ function renderProgramForm() {
         <input type="submit" value="Create">
     </form>
     `
-    programFormContainer.addEventListener("submit", programFormSubmission(e))
+    programFormContainer().addEventListener("submit", (event) => {programFormSubmission(event)})
 }
 
-function programFormSubmission(e){
-    e.preventDefault()
-    let title = document.getElementById("title").value 
+function programFormSubmission(event){
+    event.preventDefault()
+    let title = document.getElementById("ptitle").value 
     let split = document.getElementById("split").value 
     let length = document.getElementById("length").value 
     let goal = document.getElementById("goal").value
@@ -111,29 +113,34 @@ function programFormSubmission(e){
     let workoutsPerWeek = document.getElementById("workoutsPerWeek").value 
     let startDate = document.getElementById("startdate").value
 
+
     let program = {
+        program: {
         title: title,
-        split: split, 
+        split: split,
         length: length,
         goal: goal,
         weeklyVolume: weeklyVolume,
         workoutsPerWeek: workoutsPerWeek,
-        startDate: startdate
+        startdate: startDate}
     }
 
     fetch(baseUrl + `/programs`, {
         method: "post",
         headers: {
             'Accept': 'application/json',
-            'Content-type': 'application'
+            'Content-type': 'application/json'
         },
         body: JSON.stringify(program)
     })
     .then(resp => resp.json())
     .then(program => {
-        let p = new Program (program.id, program.title, program.split, program.length, program.goal, program.weeklyVolume, program.workoutsPerWeek, program.startDate)
-        displayProgram(p)
+        debugger;
+        Program.create(program.id, program.title, program.split, program.length, program.goal, program.weeklyVolume, program.workoutsPerWeek, program.startdate)
+        displayProgram(Program.all.last)
     })
+
+    programFormContainer().innerHTML = ""
 }
 
 // function createForm(){

@@ -20,6 +20,7 @@ class ProgramsController < ApplicationController
 
   # POST /programs
   def create
+
     @program = Program.new(program_params)
 
     if @program.save
@@ -51,6 +52,6 @@ class ProgramsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def program_params
-      params.require(:program).permit(:goal, :length, :split, :title, :weeklyVolume, :workoutsPerWeek)
+      params.require(:program).permit(:goal, :length, :split, :title, :weeklyVolume, :workoutsPerWeek, :startdate)
     end
 end
