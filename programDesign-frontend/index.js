@@ -1,16 +1,28 @@
 const introduction = () => document.getElementById('title');
 const programTitle = () => document.querySelector()
 const programList = () => document.getElementById('program-list')
-const newbtn = document.getElementById('new-program')
-const baseUrl = 'http://localhost:3000'
+const newProgram = () => document.getElementById('new-program')
+const baseUrl = 'http://localhost:3000';
+const programFormContainer = document.querySelector("#programFormContainer");
+let addProgram = false;
 
 
 document.addEventListener("DOMContentLoaded", callOnLoad)
 
 
+
 function callOnLoad() {
     loadPrograms();
-    newbtn.addEventListener('click', renderProgramForm)
+    newProgram.addEventListener("click", () => {
+  addProgram = !addProgram;
+  if (addProgram) {
+      programFormContainer.style.display = "block";
+      renderProgramForm()
+    } else {
+    programFormContainer.style.display = "none";
+  }
+});
+
 }
 
 function loadPrograms() {
@@ -64,18 +76,11 @@ function displayProgram(program) {
 };
 
 function deleteProgram(e){
-    this.id 
-    this.parentNode
-    
-    fetch(baseUrl + '/programs/' + this.id,{
-        method: "delete"
+    let programId = parseInt(e.target.dataset.id)
+    fetch(`${baseUrl}/programs/${programId}`,{
+        method: 'DELETE'
     })
-    .then(resp => {
-        return resp.json();
-    })
-    .then(data => {
-        this.parentNode.remove();
-    })
+    this.location.reload()
 }
 
 
@@ -83,21 +88,11 @@ function editProgram(e){
     
 }
 
-function editBlog(e) {
-    editing = true;
-    
-    // populate form inputs
-    //     blogTitle().value = this.parentNode.querySelector('h4').innerText
-    //     blogContent().value = this.parentNode.querySelector('p').innerText;
-    //     submitButton().value = "Edit Blog"
-    
-    //     editedBlogId = this.id;
-    // debugger;
-}
+
 
 function renderProgramForm() {
-    const programForm = document.getElementById('program-form');
-    programForm.innerHTML += 
+    const programFormContainer = document.getElementById('new-program');
+    programFormContainer.innerHTML += 
     `
     <h1>Create Program</h1>
     <form>
@@ -111,11 +106,42 @@ function renderProgramForm() {
         <input type="submit" value="Create">
     </form><br>
     `
-    programForm.addEventListener("submit", programFormSubmission(e))
+    programForm.addEventListener("submit", programFormSubmission())
 }
 
-function programFormSubmission(e){
+function programFormSubmission(){
+    event.preventDefault()
+    let title = document.getElementById("title").value 
+    let split = document.getElementById("split").value 
+    let length = document.getElementById("length").value 
+    let goal = document.getElementById("goal").value
+    let weeklyVolume = document.getElementById("weeklyVolume").value 
+    let workoutsPerWeek = document.getElementById("workoutsPerWeek").value 
+    let startDate = document.getElementById("startdate").value
 
+    let program = {
+        title: title,
+        split: split, 
+        length: length,
+        goal: goal,
+        weeklyVolume: weeklyVolume,
+        workoutsPerWeek: workoutsPerWeek,
+        startDate: startdate
+    }
+
+    fetch(baseUrl + `/programs`, {
+        method: "post",
+        headers: {
+            'Accept': 'application/json',
+            'Content-type': 'application'
+        },
+        body: JSON.stringify(program)
+    })
+    .then(resp => resp.json())
+    .then(program => {
+        let p = new Program (program.id, program.title, program.split, program.length, program.goal, program.weeklyVolume, program.workoutsPerWeek, program.startDate)
+        displayProgram(p)
+    })
 }
 
 // function createForm(){
