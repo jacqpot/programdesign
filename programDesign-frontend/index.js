@@ -15,7 +15,9 @@ function callOnLoad() {
     loadPrograms();
     programFormContainer().innerHTML = ''
     newProgramBtn().addEventListener("click", (event) => {renderProgramForm()});
+    
 
+      
 }
 
 function loadPrograms() {
@@ -38,7 +40,9 @@ function displayPrograms(programs){
 function displayProgram(program, id) {
 
     const div = document.createElement('div');
+    div.classList.add('program-card')
     const h1 = document.createElement('h1');
+    const date = document.createElement('h3');
     const h4 = document.createElement('h4');
     const p = document.createElement('p');
     const deleteButton = document.createElement('button');
@@ -57,13 +61,15 @@ function displayProgram(program, id) {
     view.classList.add('btn');
     view.innerText = 'view';
     view.id = id;
-    view.addEventListener('click', (e) => {renderProgramWorkouts(e)})
+    view.addEventListener('click', (e) => {clearProgramList(e)})
     
     h1.innerText = program.title;
+    date.innerText = `Started on: ${program.startdate}`
     h4.innerText = program.split;
     p.innerText = `This is a ${program['goal']} Program. Using a ${program.split}, and will be running for ${program.length} weeks. \n At ${program.workoutsPerWeek} workouts per week each muscle group should hit ${program.weeklyVolume} sets per week.`
     
     div.appendChild(h1);
+    div.appendChild(date)
     div.appendChild(h4);
     div.appendChild(p);
     div.appendChild(deleteButton);
@@ -73,11 +79,11 @@ function displayProgram(program, id) {
 };
 
 function deleteProgram(e){
-    let programId = parseInt(e.target.dataset.id)
+    let programId = parseInt(e.target.id)
     fetch(`${baseUrl}/programs/${programId}`,{
         method: 'DELETE'
     })
-    debugger;
+    // debugger;
     this.location.reload()
 }
 
@@ -89,13 +95,24 @@ function editProgram(e){
 
 
 function renderProgramForm() {
-    
+    var elems = document.querySelectorAll('select');
+    var instances = M.FormSelect.init(elems);
     programFormContainer().innerHTML =  
     `
     <h1>Create Program</h1>
     <form>
         Title: <input type="text" id="ptitle"><br>
-        Split: <input type="text" id="split"><br>
+
+        <div class="input-field" id="split">
+            <select>
+                <option value="" disabled selected>Choose your option</option>
+                <option value="1">Total Body</option>
+                <option value="2">Push, Pull, Legs</option>
+                <option value="3">Upper Lower</option>
+                <option value="3">Body Part Split</option>
+            </select>
+            <label>Split:</label>
+        </div>
         length in weeks: <input type="integer" id="length"><br>
         Goal: <input type="integer" id="goal"><br>
         Weekly Volume: <input type="integer" id="weeklyVolume"><br>
@@ -147,6 +164,26 @@ function programFormSubmission(event){
     programFormContainer().innerHTML = ""
 }
 
-function renderProgramWorkouts(e){
-    console.log(e.target.parentNode)
+function clearProgramList(e){
+    let pn = e.target.parentNode
+    console.log(pn);
+    document.getElementById("program-list").innerHTML = "";
+    getProgramDetails(e.target.id)
 }
+
+function getProgramDetails(id){
+    fetch(baseUrl + '/programs/'+ id)
+    .then(resp => {
+        if (resp.status !== 200) {
+            throw new error(resp.statusText);
+        }
+        return resp.json()
+    })
+    .catch(errors => console.log(errors))
+    .then(program => displayChosenProgramWorkouts(program))
+}
+
+function displayChosenProgram(program){
+    debugger;
+    displayProgram(program.data.attributes, program.id)
+};
