@@ -158,44 +158,44 @@ function renderProgramForm(program = null) {
     `
     <h1 id="form-header">Create Program</h1>
     <form>
-    Title: <input type="text" id="ptitle"><br>
-    
-<div class="input-field"  name="split">
-    <select id="split">
-        <option value="" disabled ${program ? '' : 'selected'}>Choose your option</option>
-        <option value="Total Body" ${program && program.data.attributes.length == "Total Body" ? 'selected' : ''} >Total Body</option>
-        <option value="Push, Pull, Legs" ${program && program.data.attributes.length == "Push, Pull, Legs" ? 'selected' : ''} >Push, Pull, Legs</option>
-        <option value="Upper, Lower" ${program && program.data.attributes.length == "Upper, Lower" ? 'selected' : ''} >Upper, Lower</option>
-        <option value="Body Part Split" ${program && program.data.attributes.length == "Body Part Split" ? 'selected' : ''} >Body Part Split</option>
-    </select>
-    <label>Split:</label>
-</div>
-<div class="input-field"  name="length">
-    <select id="length">
-        <option value="" disabled ${program ? '' : 'selected'}>Choose your option</option>
-        <option value="4" " ${program && program.data.attributes.length == "4" ? 'selected' : ''} >4 weeks</option>
-        <option value="8"" ${program && program.data.attributes.length == "8" ? 'selected' : ''} >8 weeks</option>
-        <option value="12"" ${program && program.data.attributes.length == "12" ? 'selected' : ''} >12 weeks</option>
-    </select>
-    <label>length:</label>
-</div>
-<div class="input-field"  name="goal">
-    <select id="goal">
-        <option value="" disabled ${program ? '' : 'selected'}>Choose your option</option>
-        <option value="Power" ${program && program.data.attributes.goal == "Power" ? 'selected' : ''} >Power</option>
-        <option value="Strength" ${program && program.data.attributes.goal == "Strength" ? 'selected' : ''} >Strength</option>
-        <option value="Hypertrophy" ${program && program.data.attributes.goal == "Hypertrophy" ? 'selected' : ''} >Hypertrophy</option>
-        <option value="Endurance" ${program && program.data.attributes.goal == "Endurance" ? 'selected' : ''} >Endurance</option>
-        <option value="Stability" ${program && program.data.attributes.goal == "Stability" ? 'selected' : ''} >Stability</option>
-    </select>
-    <label>Goal:</label>
-</div>
-Weekly Volume: <input type="integer" id="weeklyVolume"><br>
-Workouts Per Week: <input type="integer" id="workoutsPerWeek"><br>
-Start Date: <input type="date" id="startdate"><br>
-<input type="submit" value="Create">
-</form>
-`
+        Title: <input type="text" id="ptitle"><br>
+        
+        <div class="input-field"  name="split">
+            <select id="split">
+                <option value="" disabled ${program ? '' : 'selected'}>Choose your option</option>
+                <option value="Total Body" ${program && program.data.attributes.length == "Total Body" ? 'selected' : ''} >Total Body</option>
+                <option value="Push, Pull, Legs" ${program && program.data.attributes.length == "Push, Pull, Legs" ? 'selected' : ''} >Push, Pull, Legs</option>
+                <option value="Upper, Lower" ${program && program.data.attributes.length == "Upper, Lower" ? 'selected' : ''} >Upper, Lower</option>
+                <option value="Body Part Split" ${program && program.data.attributes.length == "Body Part Split" ? 'selected' : ''} >Body Part Split</option>
+            </select>
+            <label>Split:</label>
+        </div>
+        <div class="input-field"  name="length">
+            <select id="length">
+                <option value="" disabled ${program ? '' : 'selected'}>Choose your option</option>
+                <option value="4" " ${program && program.data.attributes.length == "4" ? 'selected' : ''} >4 weeks</option>
+                <option value="8"" ${program && program.data.attributes.length == "8" ? 'selected' : ''} >8 weeks</option>
+                <option value="12"" ${program && program.data.attributes.length == "12" ? 'selected' : ''} >12 weeks</option>
+            </select>
+            <label>length:</label>
+        </div>
+        <div class="input-field"  name="goal">
+            <select id="goal">
+                <option value="" disabled ${program ? '' : 'selected'}>Choose your option</option>
+                <option value="Power" ${program && program.data.attributes.goal == "Power" ? 'selected' : ''} >Power</option>
+                <option value="Strength" ${program && program.data.attributes.goal == "Strength" ? 'selected' : ''} >Strength</option>
+                <option value="Hypertrophy" ${program && program.data.attributes.goal == "Hypertrophy" ? 'selected' : ''} >Hypertrophy</option>
+                <option value="Endurance" ${program && program.data.attributes.goal == "Endurance" ? 'selected' : ''} >Endurance</option>
+                <option value="Stability" ${program && program.data.attributes.goal == "Stability" ? 'selected' : ''} >Stability</option>
+            </select>
+            <label>Goal:</label>
+        </div>
+        Weekly Volume: <input type="integer" id="weeklyVolume"><br>
+        Workouts Per Week: <input type="integer" id="workoutsPerWeek"><br>
+        Start Date: <input type="date" id="startdate"><br>
+        <input type="submit" value="Create">
+    </form>
+    `
 
 $('select').formSelect();
     if (program != null){
@@ -300,7 +300,6 @@ function getProgramDetails(id){
 function displayChosenProgram(program, id){
 
     displayProgram(program.data.attributes, id)
-    programList()
     
     let newWorkoutBtn = document.createElement('button')
     newWorkoutBtn.classList.add('btn');
@@ -309,34 +308,44 @@ function displayChosenProgram(program, id){
     newWorkoutBtn.addEventListener('click', (e) => {renderWorkoutForm(e)});
     programList().appendChild(newWorkoutBtn);
     
-    program.included.forEach(workout => displayProgramWorkouts(workout.attributes, workout.id))
+    program.included.forEach(workout => displayProgramWorkouts(workout.attributes, workout.id, id))
     
 };
 
-function displayProgramWorkouts(workout, id){
-    // debugger;
+function displayProgramWorkouts(workout, id, programId){
+    const program = programId;
     const workoutList = document.getElementById('workouts');
     const div = document.createElement('div');
     const description = document.createElement('h1');
-    const warmUp = document.createElement('h4');
-    const date = document.createElement('p');
+    const warmUp = document.createElement('p');
+    const date = document.createElement('h2');
     const volume = document.createElement('p');
     const view = document.createElement("button");
-    description.innerText = workout.description;
-    warmUp.innerText = workout.warmUp;
-    date.innerText = workout.date;
-    volume.innerText = workout.volume;
+    const eList = document.createElement("ul");
+    const li = document.createElement("li");
+    const fRating = document.createElement('p');
+    const name = document.createElement('p')
+    
+    fRating.innerText = `- Fatigue Rating: ${workout.exercise.fatigueRating}`;
+    name.innerText = `- Exercise Name: ${workout.exercise.name}`;
+    warmUp.innerText = `- Warm up(if any): ${workout.warmUp}`;
+    date.innerText = `Date: ${workout.date}`;
+    volume.innerText = `- Number of sets: ${workout.volume}`;
     
     view.classList.add('btn');
     view.innerText = 'view';
     view.id = id;
     view.addEventListener('click', (e) => {viewWorkout(e)})
-
-    div.appendChild(description);
-    div.appendChild(warmUp);
+    
     div.appendChild(date);
+    div.appendChild(warmUp);
     div.appendChild(volume);
+    li.appendChild(name);
+    li.appendChild(fRating);
+    eList.appendChild(li);
+    div.appendChild(eList);
     workoutList.appendChild(div);
+    debugger;
 }
 function viewWorkout(e){
     e.preventDefault()
@@ -344,6 +353,7 @@ function viewWorkout(e){
 
 function renderWorkoutForm(e){
     e.preventDefault()
+
 }
 
 // function renderProgramForm(program = null) {
