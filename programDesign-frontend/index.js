@@ -4,7 +4,7 @@ const programList = () => document.getElementById('program-list')
 const newProgramBtn = () => document.getElementById('new-program')
 const baseUrl = 'http://localhost:3000';
 const programFormContainer = () => document.getElementById("programFormContainer");
-
+const allProgramBtn = () => document.getElementById('all-programs-btn')
 
 
 document.addEventListener("DOMContentLoaded", callOnLoad)
@@ -15,12 +15,16 @@ function callOnLoad() {
     loadPrograms();
     programFormContainer().innerHTML = ''
     newProgramBtn().addEventListener("click", (event) => {renderProgramForm()});
-     
+    allProgramBtn().addEventListener("click", (event) => {loadPrograms()});
 
       
 }
 
 function loadPrograms() {
+    
+    programFormContainer().innerHTML = ''
+    programList().innerHTML = ''
+    document.getElementById('workouts').innerHTML = ''
     fetch(baseUrl + '/programs')
     .then(resp => {
         if (resp.status !== 200) {
@@ -86,68 +90,149 @@ function deleteProgram(e){
     // debugger;
     this.location.reload()
 }
+function programUpdate(e, id) {
+    e.preventDefault();
+    let title = document.getElementById("ptitle").value;
+    let split = document.getElementById("split").value; 
+    let length = document.getElementById("length").value; 
+    let goal = document.getElementById("goal").value;
+    let weeklyVolume = document.getElementById("weeklyVolume").value; 
+    let workoutsPerWeek = document.getElementById("workoutsPerWeek").value; 
+    let startDate = document.getElementById("startdate").value;
 
 
-function editProgram(e){
-    
+    let program = {
+        program: {
+        title: title,
+        split: split,
+        length: length,
+        goal: goal,
+        weeklyVolume: weeklyVolume,
+        workoutsPerWeek: workoutsPerWeek,
+        startdate: startDate}
+    }
+
+    fetch(baseUrl + '/programs/' + id, {
+      method: "PATCH",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(program)
+    })
+    .then(resp => {
+        if (resp.status !== 200) {
+            throw new error(resp.statusText);
+        }
+        loadPrograms();
+    })
+    .catch(errors => console.log(errors));
 }
+  
+
+ function editProgram(e){
+    let id = e.target.id
+    
+    
+    fetch(baseUrl + '/programs/'+ id)
+    .then(resp => {
+        if (resp.status !== 200) {
+            throw new error(resp.statusText);
+        }
+        return resp.json()
+    })
+    .catch(errors => console.log(errors))
+    .then(program => renderProgramForm(program))
+
+ }
+//  for (const option in options) {
+//     if (options[option].value == this.parentNode.querySelectorAll('h5')[0].innerText ) {
+//         options.selectedIndex = options[option].index
+//     }
+// }
 
 
 
-function renderProgramForm() {
-
+function renderProgramForm(program = null) {
     programFormContainer().innerHTML =  
     `
-    <h1>Create Program</h1>
+    <h1 id="form-header">Create Program</h1>
     <form>
-        Title: <input type="text" id="ptitle"><br>
+    Title: <input type="text" id="ptitle"><br>
+    
+<div class="input-field"  name="split">
+    <select id="split">
+        <option value="" disabled ${program ? '' : 'selected'}>Choose your option</option>
+        <option value="Total Body" ${program && program.data.attributes.length == "Total Body" ? 'selected' : ''} >Total Body</option>
+        <option value="Push, Pull, Legs" ${program && program.data.attributes.length == "Push, Pull, Legs" ? 'selected' : ''} >Push, Pull, Legs</option>
+        <option value="Upper, Lower" ${program && program.data.attributes.length == "Upper, Lower" ? 'selected' : ''} >Upper, Lower</option>
+        <option value="Body Part Split" ${program && program.data.attributes.length == "Body Part Split" ? 'selected' : ''} >Body Part Split</option>
+    </select>
+    <label>Split:</label>
+</div>
+<div class="input-field"  name="length">
+    <select id="length">
+        <option value="" disabled ${program ? '' : 'selected'}>Choose your option</option>
+        <option value="4" " ${program && program.data.attributes.length == "4" ? 'selected' : ''} >4 weeks</option>
+        <option value="8"" ${program && program.data.attributes.length == "8" ? 'selected' : ''} >8 weeks</option>
+        <option value="12"" ${program && program.data.attributes.length == "12" ? 'selected' : ''} >12 weeks</option>
+    </select>
+    <label>length:</label>
+</div>
+<div class="input-field"  name="goal">
+    <select id="goal">
+        <option value="" disabled ${program ? '' : 'selected'}>Choose your option</option>
+        <option value="Power" ${program && program.data.attributes.goal == "Power" ? 'selected' : ''} >Power</option>
+        <option value="Strength" ${program && program.data.attributes.goal == "Strength" ? 'selected' : ''} >Strength</option>
+        <option value="Hypertrophy" ${program && program.data.attributes.goal == "Hypertrophy" ? 'selected' : ''} >Hypertrophy</option>
+        <option value="Endurance" ${program && program.data.attributes.goal == "Endurance" ? 'selected' : ''} >Endurance</option>
+        <option value="Stability" ${program && program.data.attributes.goal == "Stability" ? 'selected' : ''} >Stability</option>
+    </select>
+    <label>Goal:</label>
+</div>
+Weekly Volume: <input type="integer" id="weeklyVolume"><br>
+Workouts Per Week: <input type="integer" id="workoutsPerWeek"><br>
+Start Date: <input type="date" id="startdate"><br>
+<input type="submit" value="Create">
+</form>
+`
 
-        <div class="input-field" id="split" name="split">
-            <select>
-                <option value="" disabled selected>Choose your option</option>
-                <option value="1">Total Body</option>
-                <option value="2">Push, Pull, Legs</option>
-                <option value="3">Upper, Lower</option>
-                <option value="4">Body Part Split</option>
-            </select>
-            <label>Split:</label>
-        </div>
-        <br>
-        <div class="input-field" id="length" name="length">
-            <select>
-                <option value="" disabled selected>Choose your option</option>
-                <option value="1">4 weeks</option>
-                <option value="2">8 weeks</option>
-                <option value="3">12 weeks</option>
-            </select>
-            <label>length:</label>
-        </div>
-        <div class="input-field" id="goal" name="goal">
-        <select>
-            <option value="" disabled selected>Choose your option</option>
-            <option value="1">Power</option>
-            <option value="2">Strength</option>
-            <option value="3">Hypertrophy</option>
-            <option value="4">Endurance</option>
-            <option value="5">Stability</option>
-        </select>
-        <label>Goal:</label>
-    </div>
-        Weekly Volume: <input type="integer" id="weeklyVolume"><br>
-        Workouts Per Week: <input type="integer" id="workoutsPerWeek"><br>
-        Start Date: <input type="date" id="startdate"><br>
-        <input type="submit" value="Create">
-    </form>
-    `
-    $('select').formSelect();
-    programFormContainer().addEventListener("submit", (event) => {programFormSubmission(event)})
+$('select').formSelect();
+    if (program != null){
+        document.getElementById("form-header").innerHTML = "Edit Program";
+        document.getElementById("ptitle").value = program.data.attributes.title,
+        $("#split").val = program.data.attributes.split,
+        document.getElementById("length").value = program.data.attributes.length,
+        document.getElementById("goal").value = program.data.attributes.goal,
+        document.getElementById("weeklyVolume").value = program.data.attributes.weeklyVolume,
+        document.getElementById("workoutsPerWeek").value = program.data.attributes.workoutsPerWeek,
+        document.getElementById("startdate").value = program.data.attributes.startDate
+        // debugger;
 
-}
-
+        programFormContainer().addEventListener("submit", (event) => {
+            event.preventDefault(); 
+            programUpdate(event, program.data.id);
+        })
+    } else{
+        programFormContainer().addEventListener("submit", (event) => {
+            event.preventDefault();
+            programFormSubmission(event);
+        });
+    }
+        
+    }
+    
+    // function getOption() {
+        //     var obj = document.getElementById("mySelect");
+        //     document.getElementById("demo").innerHTML = 
+        //     obj.options[obj.selectedIndex].text;
+        //   }
+        
 function programFormSubmission(event){
     event.preventDefault()
     let title = document.getElementById("ptitle").value 
     let split = document.getElementById("split").value 
+    
     let length = document.getElementById("length").value 
     let goal = document.getElementById("goal").value
     let weeklyVolume = document.getElementById("weeklyVolume").value 
@@ -185,10 +270,19 @@ function programFormSubmission(event){
 }
 
 function clearProgramList(e){
+    e.preventDefault()
+
     let pn = e.target.parentNode
+    
     console.log(pn);
     document.getElementById("program-list").innerHTML = "";
-    getProgramDetails(e.target.id)
+    document.getElementById("workouts").innerHTML = "";
+    
+            if (pn.classList.contains('program-card')){
+        getProgramDetails(e.target.id)
+    } else {
+        loadPrograms()
+    }
 }
 
 function getProgramDetails(id){
@@ -200,12 +294,21 @@ function getProgramDetails(id){
         return resp.json()
     })
     .catch(errors => console.log(errors))
-    .then(program => displayChosenProgram(program))
+    .then(program => displayChosenProgram(program, id))
 }
 
-function displayChosenProgram(program){
+function displayChosenProgram(program, id){
 
-    displayProgram(program.data.attributes, program.id)
+    displayProgram(program.data.attributes, id)
+    programList()
+    
+    let newWorkoutBtn = document.createElement('button')
+    newWorkoutBtn.classList.add('btn');
+    newWorkoutBtn.innerText = 'Add New Workout';
+    newWorkoutBtn.id = id;
+    newWorkoutBtn.addEventListener('click', (e) => {renderWorkoutForm(e)});
+    programList().appendChild(newWorkoutBtn);
+    
     program.included.forEach(workout => displayProgramWorkouts(workout.attributes, workout.id))
     
 };
@@ -236,5 +339,71 @@ function displayProgramWorkouts(workout, id){
     workoutList.appendChild(div);
 }
 function viewWorkout(e){
-
+    e.preventDefault()
 }
+
+function renderWorkoutForm(e){
+    e.preventDefault()
+}
+
+// function renderProgramForm(program = null) {
+//     programFormContainer().innerHTML =  
+//     `
+//     <h1 id="form-header">Create Program</h1>
+//     <form>
+//     Title: <input type="text" id="ptitle"><br>
+    
+// <div class="input-field"  name="split">
+//     <select id="split">
+//         <option value="" disabled selected>Choose your option</option>
+//         <option value="Total Body">Total Body</option>
+//         <option value="Push, Pull, Legs">Push, Pull, Legs</option>
+//         <option value="Upper, Lower">Upper, Lower</option>
+//         <option value="Body Part Split">Body Part Split</option>
+//     </select>
+//     <label>Split:</label>
+// </div>
+// <div class="input-field"  name="length">
+//     <select id="length">
+//         <option value="" disabled selected>Choose your option</option>
+//         <option value="4">4 weeks</option>
+//         <option value="8">8 weeks</option>
+//         <option value="12">12 weeks</option>
+//     </select>
+//     <label>length:</label>
+// </div>
+// <div class="input-field"  name="goal">
+//     <select id="goal">
+//         <option value="" disabled selected>Choose your option</option>
+//         <option value="Power">Power</option>
+//         <option value="Strength">Strength</option>
+//         <option value="Hypertrophy">Hypertrophy</option>
+//         <option value="Endurance">Endurance</option>
+//         <option value="Stability">Stability</option>
+//     </select>
+//     <label>Goal:</label>
+// </div>
+// Weekly Volume: <input type="integer" id="weeklyVolume"><br>
+// Workouts Per Week: <input type="integer" id="workoutsPerWeek"><br>
+// Start Date: <input type="date" id="startdate"><br>
+// <input type="submit" value="Create">
+// </form>
+// `
+// $('select').formSelect();
+//     if (program != null){
+//         document.getElementById("form-header").innerHTML = "Edit Program";
+//         document.getElementById("ptitle").value = program.data.attributes.title,
+//         $("#split").val = program.data.attributes.split,
+//         document.getElementById("length").value = program.data.attributes.length,
+//         document.getElementById("goal").value = program.data.attributes.goal,
+//         document.getElementById("weeklyVolume").value = program.data.attributes.weeklyVolume,
+//         document.getElementById("workoutsPerWeek").value = program.data.attributes.workoutsPerWeek,
+//         document.getElementById("startdate").value = program.data.attributes.startDate
+//         // debugger;
+
+//         programFormContainer().addEventListener("submit", (event) => {programUpdate(event, program.data.id)})
+//     } else{
+//         programFormContainer().addEventListener("submit", (event) => {programFormSubmission(event)})
+//     }
+        
+//     }
