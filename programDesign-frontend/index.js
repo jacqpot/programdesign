@@ -353,7 +353,32 @@ function viewWorkout(e){
 
 function renderWorkoutForm(e){
     e.preventDefault()
+    const wList = document.getElementById('workout-form');
 
+    wList.innerHTML = 
+    `
+    <h1 id="form-header">Add Workout</h1>
+    <form>
+    <div class="input-field"  name="description">
+         <select id="description">
+            <option value="" disabled ${program ? '' : 'selected'}>Choose your option</option>
+            <option value="Total Body" ${program && program.data.attributes.length == "Total Body" ? 'selected' : ''} >Total Body</option>
+            <option value="Push" ${program && program.data.attributes.length == "Push" ? 'selected' : ''} >Push</option>
+            <option value="Pull" ${program && program.data.attributes.length == "Pull" ? 'selected' : ''} >Pull</option>
+            <option value="Legs" ${program && program.data.attributes.length == "Legs" ? 'selected' : ''} >Legs</option>
+            <option value="Upper Body" ${program && program.data.attributes.length == "Upper Body" ? 'selected' : ''} >Upper Body</option>
+            <option value="Lower Body" ${program && program.data.attributes.length == "Lower Body" ? 'selected' : ''} >Lower Body</option>
+            <option value="Chest" ${program && program.data.attributes.length == "Chest" ? 'selected' : ''} >Chest</option>
+            <option value="Back" ${program && program.data.attributes.length == "Back" ? 'selected' : ''} >Back</option>
+            <option value="Shoulders" ${program && program.data.attributes.length == "Shoulders" ? 'selected' : ''} >Shoulders</option>
+            <option value="Arms" ${program && program.data.attributes.length == "Arms" ? 'selected' : ''} >Arms</option>
+            <option value="Legs" ${program && program.data.attributes.length == "Legs" ? 'selected' : ''} >Legs</option>
+         </select>
+         <label>Muscle Groups worked:</label>
+     </div>
+        
+    </form>
+    `
 }
 
 // function renderProgramForm(program = null) {
@@ -361,44 +386,45 @@ function renderWorkoutForm(e){
 //     `
 //     <h1 id="form-header">Create Program</h1>
 //     <form>
-//     Title: <input type="text" id="ptitle"><br>
-    
-// <div class="input-field"  name="split">
-//     <select id="split">
-//         <option value="" disabled selected>Choose your option</option>
-//         <option value="Total Body">Total Body</option>
-//         <option value="Push, Pull, Legs">Push, Pull, Legs</option>
-//         <option value="Upper, Lower">Upper, Lower</option>
-//         <option value="Body Part Split">Body Part Split</option>
-//     </select>
-//     <label>Split:</label>
-// </div>
-// <div class="input-field"  name="length">
-//     <select id="length">
-//         <option value="" disabled selected>Choose your option</option>
-//         <option value="4">4 weeks</option>
-//         <option value="8">8 weeks</option>
-//         <option value="12">12 weeks</option>
-//     </select>
-//     <label>length:</label>
-// </div>
-// <div class="input-field"  name="goal">
-//     <select id="goal">
-//         <option value="" disabled selected>Choose your option</option>
-//         <option value="Power">Power</option>
-//         <option value="Strength">Strength</option>
-//         <option value="Hypertrophy">Hypertrophy</option>
-//         <option value="Endurance">Endurance</option>
-//         <option value="Stability">Stability</option>
-//     </select>
-//     <label>Goal:</label>
-// </div>
-// Weekly Volume: <input type="integer" id="weeklyVolume"><br>
-// Workouts Per Week: <input type="integer" id="workoutsPerWeek"><br>
-// Start Date: <input type="date" id="startdate"><br>
-// <input type="submit" value="Create">
-// </form>
-// `
+//         Title: <input type="text" id="ptitle"><br>
+        
+//         <div class="input-field"  name="split">
+//             <select id="split">
+//                 <option value="" disabled ${program ? '' : 'selected'}>Choose your option</option>
+//                 <option value="Total Body" ${program && program.data.attributes.length == "Total Body" ? 'selected' : ''} >Total Body</option>
+//                 <option value="Push, Pull, Legs" ${program && program.data.attributes.length == "Push, Pull, Legs" ? 'selected' : ''} >Push, Pull, Legs</option>
+//                 <option value="Upper, Lower" ${program && program.data.attributes.length == "Upper, Lower" ? 'selected' : ''} >Upper, Lower</option>
+//                 <option value="Body Part Split" ${program && program.data.attributes.length == "Body Part Split" ? 'selected' : ''} >Body Part Split</option>
+//             </select>
+//             <label>Split:</label>
+//         </div>
+//         <div class="input-field"  name="length">
+//             <select id="length">
+//                 <option value="" disabled ${program ? '' : 'selected'}>Choose your option</option>
+//                 <option value="4" " ${program && program.data.attributes.length == "4" ? 'selected' : ''} >4 weeks</option>
+//                 <option value="8"" ${program && program.data.attributes.length == "8" ? 'selected' : ''} >8 weeks</option>
+//                 <option value="12"" ${program && program.data.attributes.length == "12" ? 'selected' : ''} >12 weeks</option>
+//             </select>
+//             <label>length:</label>
+//         </div>
+//         <div class="input-field"  name="goal">
+//             <select id="goal">
+//                 <option value="" disabled ${program ? '' : 'selected'}>Choose your option</option>
+//                 <option value="Power" ${program && program.data.attributes.goal == "Power" ? 'selected' : ''} >Power</option>
+//                 <option value="Strength" ${program && program.data.attributes.goal == "Strength" ? 'selected' : ''} >Strength</option>
+//                 <option value="Hypertrophy" ${program && program.data.attributes.goal == "Hypertrophy" ? 'selected' : ''} >Hypertrophy</option>
+//                 <option value="Endurance" ${program && program.data.attributes.goal == "Endurance" ? 'selected' : ''} >Endurance</option>
+//                 <option value="Stability" ${program && program.data.attributes.goal == "Stability" ? 'selected' : ''} >Stability</option>
+//             </select>
+//             <label>Goal:</label>
+//         </div>
+//         Weekly Volume: <input type="integer" id="weeklyVolume"><br>
+//         Workouts Per Week: <input type="integer" id="workoutsPerWeek"><br>
+//         Start Date: <input type="date" id="startdate"><br>
+//         <input type="submit" value="Create">
+//     </form>
+//     `
+
 // $('select').formSelect();
 //     if (program != null){
 //         document.getElementById("form-header").innerHTML = "Edit Program";
@@ -411,9 +437,15 @@ function renderWorkoutForm(e){
 //         document.getElementById("startdate").value = program.data.attributes.startDate
 //         // debugger;
 
-//         programFormContainer().addEventListener("submit", (event) => {programUpdate(event, program.data.id)})
+//         programFormContainer().addEventListener("submit", (event) => {
+//             event.preventDefault(); 
+//             programUpdate(event, program.data.id);
+//         })
 //     } else{
-//         programFormContainer().addEventListener("submit", (event) => {programFormSubmission(event)})
+//         programFormContainer().addEventListener("submit", (event) => {
+//             event.preventDefault();
+//             programFormSubmission(event);
+//         });
 //     }
         
 //     }
