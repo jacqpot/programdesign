@@ -305,7 +305,7 @@ function displayChosenProgram(program, id){
     newWorkoutBtn.classList.add('btn');
     newWorkoutBtn.innerText = 'Add New Workout';
     newWorkoutBtn.id = id;
-    newWorkoutBtn.addEventListener('click', (e) => {renderWorkoutForm(e)});
+    newWorkoutBtn.addEventListener('click', (e) => {renderWorkoutForm(e, id)});
     programList().appendChild(newWorkoutBtn);
     
     program.included.forEach(workout => displayProgramWorkouts(workout.attributes, workout.id, id))
@@ -335,7 +335,7 @@ function displayProgramWorkouts(workout, id, programId){
     view.classList.add('btn');
     view.innerText = 'view';
     view.id = id;
-    view.addEventListener('click', (e) => {viewWorkout(e)})
+    view.addEventListener('click', (e) => {viewWorkout(e, id)})
     
     div.appendChild(date);
     div.appendChild(warmUp);
@@ -345,107 +345,65 @@ function displayProgramWorkouts(workout, id, programId){
     eList.appendChild(li);
     div.appendChild(eList);
     workoutList.appendChild(div);
-    debugger;
+    // debugger;
 }
 function viewWorkout(e){
     e.preventDefault()
 }
 
-function renderWorkoutForm(e){
+function renderWorkoutForm(e, workout_id, workout = null){
     e.preventDefault()
     const wList = document.getElementById('workout-form');
-
+    
     wList.innerHTML = 
     `
+    console.log("here")
     <h1 id="form-header">Add Workout</h1>
     <form>
+    Date: <input type="date" id="date"><br>
     <div class="input-field"  name="description">
          <select id="description">
-            <option value="" disabled ${program ? '' : 'selected'}>Choose your option</option>
-            <option value="Total Body" ${program && program.data.attributes.length == "Total Body" ? 'selected' : ''} >Total Body</option>
-            <option value="Push" ${program && program.data.attributes.length == "Push" ? 'selected' : ''} >Push</option>
-            <option value="Pull" ${program && program.data.attributes.length == "Pull" ? 'selected' : ''} >Pull</option>
-            <option value="Legs" ${program && program.data.attributes.length == "Legs" ? 'selected' : ''} >Legs</option>
-            <option value="Upper Body" ${program && program.data.attributes.length == "Upper Body" ? 'selected' : ''} >Upper Body</option>
-            <option value="Lower Body" ${program && program.data.attributes.length == "Lower Body" ? 'selected' : ''} >Lower Body</option>
-            <option value="Chest" ${program && program.data.attributes.length == "Chest" ? 'selected' : ''} >Chest</option>
-            <option value="Back" ${program && program.data.attributes.length == "Back" ? 'selected' : ''} >Back</option>
-            <option value="Shoulders" ${program && program.data.attributes.length == "Shoulders" ? 'selected' : ''} >Shoulders</option>
-            <option value="Arms" ${program && program.data.attributes.length == "Arms" ? 'selected' : ''} >Arms</option>
-            <option value="Legs" ${program && program.data.attributes.length == "Legs" ? 'selected' : ''} >Legs</option>
+            <option value="" disabled ${workout ? '' : 'selected'}>Choose your option</option>
+            <option value="Total Body" ${workout && workout.data.attributes.length == "Total Body" ? 'selected' : ''} >Total Body</option>
+            <option value="Push" ${workout && workout.data.attributes.length == "Push" ? 'selected' : ''} >Push</option>
+            <option value="Pull" ${workout && workout.data.attributes.length == "Pull" ? 'selected' : ''} >Pull</option>
+            <option value="Legs" ${workout && workout.data.attributes.length == "Legs" ? 'selected' : ''} >Legs</option>
+            <option value="Upper Body" ${workout && workout.data.attributes.length == "Upper Body" ? 'selected' : ''} >Upper Body</option>
+            <option value="Lower Body" ${workout && workout.data.attributes.length == "Lower Body" ? 'selected' : ''} >Lower Body</option>
+            <option value="Chest" ${workout && workout.data.attributes.length == "Chest" ? 'selected' : ''} >Chest</option>
+            <option value="Back" ${workout && workout.data.attributes.length == "Back" ? 'selected' : ''} >Back</option>
+            <option value="Shoulders" ${workout && workout.data.attributes.length == "Shoulders" ? 'selected' : ''} >Shoulders</option>
+            <option value="Arms" ${workout && workout.data.attributes.length == "Arms" ? 'selected' : ''} >Arms</option>
+            <option value="Legs" ${workout && workout.data.attributes.length == "Legs" ? 'selected' : ''} >Legs</option>
          </select>
          <label>Muscle Groups worked:</label>
      </div>
-        
+     Total sets per primary muscle group worked: <input type="integer" id="Volume"><br>
+     warmUp: <input type="integer" id="warmUp"><br>
+     <input type="hidden" id="workout_id" name="workout_id" value="${workout_id}">
+     <input type="submit" value="Create">
     </form>
     `
+    $('select').formSelect()
+    programFormContainer().addEventListener("submit", (event) => {
+        event.preventDefault();
+        workoutFormSubmission(event);
+                    });
+    // if (program != null){
+    //             document.getElementById("form-header").innerHTML = "Edit Workout";
+    //             document.getElementById("description").value = program.data.attributes.description,
+    //             $("#split").val = program.data.attributes.split,
+    //             document.getElementById("length").value = program.data.attributes.length,
+    //             document.getElementById("goal").value = program.data.attributes.goal,
+    //             document.getElementById("weeklyVolume").value = program.data.attributes.weeklyVolume,
+
+    //             // debugger;
+        
+    //             programFormContainer().addEventListener("submit", (event) => {
+    //                 event.preventDefault(); 
+    //                 programUpdate(event, program.data.id);
+    //             })
+    //         } else{
+    //             ;
+    //         }
 }
-
-// function renderProgramForm(program = null) {
-//     programFormContainer().innerHTML =  
-//     `
-//     <h1 id="form-header">Create Program</h1>
-//     <form>
-//         Title: <input type="text" id="ptitle"><br>
-        
-//         <div class="input-field"  name="split">
-//             <select id="split">
-//                 <option value="" disabled ${program ? '' : 'selected'}>Choose your option</option>
-//                 <option value="Total Body" ${program && program.data.attributes.length == "Total Body" ? 'selected' : ''} >Total Body</option>
-//                 <option value="Push, Pull, Legs" ${program && program.data.attributes.length == "Push, Pull, Legs" ? 'selected' : ''} >Push, Pull, Legs</option>
-//                 <option value="Upper, Lower" ${program && program.data.attributes.length == "Upper, Lower" ? 'selected' : ''} >Upper, Lower</option>
-//                 <option value="Body Part Split" ${program && program.data.attributes.length == "Body Part Split" ? 'selected' : ''} >Body Part Split</option>
-//             </select>
-//             <label>Split:</label>
-//         </div>
-//         <div class="input-field"  name="length">
-//             <select id="length">
-//                 <option value="" disabled ${program ? '' : 'selected'}>Choose your option</option>
-//                 <option value="4" " ${program && program.data.attributes.length == "4" ? 'selected' : ''} >4 weeks</option>
-//                 <option value="8"" ${program && program.data.attributes.length == "8" ? 'selected' : ''} >8 weeks</option>
-//                 <option value="12"" ${program && program.data.attributes.length == "12" ? 'selected' : ''} >12 weeks</option>
-//             </select>
-//             <label>length:</label>
-//         </div>
-//         <div class="input-field"  name="goal">
-//             <select id="goal">
-//                 <option value="" disabled ${program ? '' : 'selected'}>Choose your option</option>
-//                 <option value="Power" ${program && program.data.attributes.goal == "Power" ? 'selected' : ''} >Power</option>
-//                 <option value="Strength" ${program && program.data.attributes.goal == "Strength" ? 'selected' : ''} >Strength</option>
-//                 <option value="Hypertrophy" ${program && program.data.attributes.goal == "Hypertrophy" ? 'selected' : ''} >Hypertrophy</option>
-//                 <option value="Endurance" ${program && program.data.attributes.goal == "Endurance" ? 'selected' : ''} >Endurance</option>
-//                 <option value="Stability" ${program && program.data.attributes.goal == "Stability" ? 'selected' : ''} >Stability</option>
-//             </select>
-//             <label>Goal:</label>
-//         </div>
-//         Weekly Volume: <input type="integer" id="weeklyVolume"><br>
-//         Workouts Per Week: <input type="integer" id="workoutsPerWeek"><br>
-//         Start Date: <input type="date" id="startdate"><br>
-//         <input type="submit" value="Create">
-//     </form>
-//     `
-
-// $('select').formSelect();
-//     if (program != null){
-//         document.getElementById("form-header").innerHTML = "Edit Program";
-//         document.getElementById("ptitle").value = program.data.attributes.title,
-//         $("#split").val = program.data.attributes.split,
-//         document.getElementById("length").value = program.data.attributes.length,
-//         document.getElementById("goal").value = program.data.attributes.goal,
-//         document.getElementById("weeklyVolume").value = program.data.attributes.weeklyVolume,
-//         document.getElementById("workoutsPerWeek").value = program.data.attributes.workoutsPerWeek,
-//         document.getElementById("startdate").value = program.data.attributes.startDate
-//         // debugger;
-
-//         programFormContainer().addEventListener("submit", (event) => {
-//             event.preventDefault(); 
-//             programUpdate(event, program.data.id);
-//         })
-//     } else{
-//         programFormContainer().addEventListener("submit", (event) => {
-//             event.preventDefault();
-//             programFormSubmission(event);
-//         });
-//     }
-        
-//     }
