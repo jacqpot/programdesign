@@ -5,7 +5,7 @@ const newProgramBtn = () => document.getElementById('new-program')
 const baseUrl = 'http://localhost:3000';
 const programFormContainer = () => document.getElementById("programFormContainer");
 const allProgramBtn = () => document.getElementById('all-programs-btn')
-
+const workoutFormContainer = () => document.getElementById("workout-form-container")
 
 document.addEventListener("DOMContentLoaded", callOnLoad)
 
@@ -316,7 +316,7 @@ function displayProgramWorkouts(workout, id, programId){
     const program = programId;
     const workoutList = document.getElementById('workouts');
     const div = document.createElement('div');
-    const description = document.createElement('h1');
+    const description = document.createElement('p');
     const warmUp = document.createElement('p');
     const date = document.createElement('h2');
     const volume = document.createElement('p');
@@ -330,6 +330,7 @@ function displayProgramWorkouts(workout, id, programId){
     name.innerText = `- Exercise Name: ${workout.exercise.name}`;
     warmUp.innerText = `- Warm up(if any): ${workout.warmUp}`;
     date.innerText = `Date: ${workout.date}`;
+    description.innerText = `Body part(s) worked: ${workout.description}`
     volume.innerText = `- Number of sets: ${workout.volume}`;
     
     view.classList.add('btn');
@@ -338,6 +339,7 @@ function displayProgramWorkouts(workout, id, programId){
     view.addEventListener('click', (e) => {viewWorkout(e, id)})
     
     div.appendChild(date);
+    div.appendChild(description);
     div.appendChild(warmUp);
     div.appendChild(volume);
     li.appendChild(name);
@@ -352,10 +354,9 @@ function viewWorkout(e){
 }
 
 function renderWorkoutForm(e, workout_id, workout = null){
-    e.preventDefault()
-    const wList = document.getElementById('workout-form');
+    e.preventDefault();
     
-    wList.innerHTML = 
+    workoutFormContainer().innerHTML = 
     `
     console.log("here")
     <h1 id="form-header">Add Workout</h1>
@@ -378,14 +379,14 @@ function renderWorkoutForm(e, workout_id, workout = null){
          </select>
          <label>Muscle Groups worked:</label>
      </div>
-     Total sets per primary muscle group worked: <input type="integer" id="Volume"><br>
+     Total working sets per primary muscle group worked: <input type="integer" id="volume"><br>
      warmUp: <input type="integer" id="warmUp"><br>
      <input type="hidden" id="workout_id" name="workout_id" value="${workout_id}">
      <input type="submit" value="Create">
     </form>
     `
     $('select').formSelect()
-    programFormContainer().addEventListener("submit", (event) => {
+    workoutFormContainer().addEventListener("submit", (event) => {
         event.preventDefault();
         workoutFormSubmission(event);
                     });
@@ -407,3 +408,37 @@ function renderWorkoutForm(e, workout_id, workout = null){
     //             ;
     //         }
 }
+
+function workoutFormSubmission(event){
+    event.preventDefault()
+    let date = document.getElementById("date").value;
+    let description = document.getElementById("description").value;
+    let volume = document.getElementById("volume").value;
+    let warmUp = document.getElementById("warmUp").value;
+    let programId = document.getElementById("workout_id").value;
+    let workout = {
+        workout: {
+            date: date,
+            description: description,
+            volume: volume,
+            warmUp: warmUp,
+            program_id: programId
+        }
+    }
+
+    fetch(baseUrl + `/workouts`, {
+        method: "post",
+        headers: {
+             'Accept': 'application/json',
+             'Content-type': 'application/json'
+        },
+        body: JSON.stringify(workout)
+    })
+    .then(resp => resp.json())
+    .then(workout => {
+        Workout.create(workout.id, workout.Program_id, workout.volume, workout.warmUp, workout.date, workout.description)
+        displayProgramWorkouts(Workout.all.last)
+    })
+    workoutFormContainer().innerHTML = ""
+}
+
