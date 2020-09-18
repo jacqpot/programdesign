@@ -419,30 +419,53 @@ function getWorkoutDetails(id){
 function renderExerciseForm(id, exercises){
  let div = document.querySelector('.wo');
  let form = document.createElement('div');
- debugger;
+//  debugger;
  form.innerHTML = `
  <form>
- <div class="input-field"  name="split">
+ <div class="input-field"  name="exercise">
     <select id="exercise">
-        <option value="" disabled 'selected'>Choose your option</option>
-        ${exercises.map(exercise => `<option value="${exercise.id}">${exercise.name}</option>`)}
-        </select>
-        <label>exercise:</label>
+            <option value="" disabled selected>Choose your option</option>
+            ${exercises.map(exercise => `<option value="${exercise.id}">${exercise.name}</option>`)}
+    </select>
+    <label>exercise:</label>
+</div>
         <input type="hidden" id="workout_id" name="workout_id" value="${id}">
         <input type="submit" value="Create">
-    </form>
-</div>
+</form>
  `
+ div.appendChild(form)
  $('select').formSelect();
  form.addEventListener("submit", (event) => {
      event.preventDefault();
      exerciseFormSubmission();
     });
-    div.appendChild(form)
 };
 
 function exerciseFormSubmission(){
-    let pick = document.getElementById("date").value;
+    let form = document.createElement('div');
+    let pick = document.getElementById("exercise").value;
+    let workoutId = document.getElementById("workout_id")
+
+    let workoutExercises = {
+        exercises: {
+            exercise_id: pick,
+            workout_id: workoutId 
+        }
+    }
+
+    fetch(baseUrl + `/workouts`,{
+        method: "post",
+        headers: {
+            'Accept': 'application/json',
+            'Content-type': 'application/json'
+        },
+        body: JSON.stringify(workout)
+    })
+    .then(resp => resp.json())
+    .then(workout => {
+        showWorkoutDetails(workout)
+    })
+    form.innerHTML = ""
 }
 
 
@@ -520,7 +543,7 @@ function workoutFormSubmission(){
             program_id: programId,
             exercise_id: null 
         }
-    }
+    };
     console.log('workout')
     fetch(baseUrl + `/workouts`, {
         method: "post",
@@ -534,7 +557,7 @@ function workoutFormSubmission(){
     .then(workout => {
         // displayProgramWorkout(Workout.all.last)
         getProgramDetails(workout.program_id)
-    })
+    });
     // debugger;
     workoutFormContainer().innerHTML = ""
 }
