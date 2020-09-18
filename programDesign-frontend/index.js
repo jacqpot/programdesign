@@ -315,8 +315,8 @@ function getProgramDetails(id){
         }
         return resp.json()
     })
-    .catch(errors => console.log(errors))
     .then(program => displayChosenProgram(program))
+    .catch(errors => console.log(errors))
     // debugger;
 }
 
@@ -347,6 +347,7 @@ function displayProgramWorkout(workout){
     const date = document.createElement('h2');
     const volume = document.createElement('p');
     const view = document.createElement("button");
+    const add = document.createElement("button");
     //  debugger;
     warmUp.innerText = `- Warm up(if any): ${workout.warmUp}`;
     date.innerText = `Date: ${workout.date}`;
@@ -357,21 +358,47 @@ function displayProgramWorkout(workout){
     view.innerText = 'View All Exercises';
     view.id = workout.id;
     view.addEventListener('click', (e) => getWorkoutDetails(e.target.id))
+    add.classList.add('btn');
+    add.innerText = 'View All Exercises';
+    add.id = workout.id;
+    add.addEventListener('click', (e) => renderExerciseForm(e.target.id))
     div.id = workout.id;
     div.appendChild(date);
     div.appendChild(description);
     div.appendChild(warmUp);
     div.appendChild(volume);
     div.appendChild(view);
+    div.appendChild(add);
     workoutList().appendChild(div);
     // debugger;
 }
 function showWorkoutDetails(workout){
-    debugger;
+    // debugger;
     console.log('workoutList')
     workoutList().innerHTML = ""
     displayProgramWorkout(workout);
+    let btn = getElementById(`${workout.id}`)
+    workout.exercises.forEach(exercise => displayExercise(exercise))
     
+}
+
+function displayExercise(exercise){
+    workoutList()
+        const div = document.createElement('div');
+        const fRating = document.createElement('p');
+        const name = document.createElement('h4')
+        const eList = document.createElement("ul");
+        const li = document.createElement("li");
+    
+        fRating.innerText = `- Fatigue Rating: ${exercise.fatigueRating}`;
+        name.innerText = `-${exercise.name}`;
+        
+        li.appendChild(name);
+        li.appendChild(fRating);
+        eList.appendChild(li);
+        div.appendChild(eList);
+        
+        workoutList().appendChild(div);
 }
 
 function getWorkoutDetails(id){
@@ -390,11 +417,6 @@ function getWorkoutDetails(id){
 // function displayExercises(e, workout){
 //     e.preventDefault()
 //     const work = document.getElementById(`${workout.id}`);
-//     const div = document.createElement('div');
-//     const fRating = document.createElement('p');
-//     const name = document.createElement('p')
-//     const eList = document.createElement("ul");
-//     const li = document.createElement("li");
 //     const addExerciseBtn = document.createElement('button')
 
 //     addExerciseBtn.classList.add('btn');
@@ -402,15 +424,6 @@ function getWorkoutDetails(id){
 //     addExerciseBtn.id = workout.id;
 //     addExerciseBtn.addEventListener('click', () => {renderExerciseSelection()});
 
-//     fRating.innerText = `- Fatigue Rating: ${workout.exercise.fatigueRating}`;
-//     name.innerText = `-${workout.exercise.name},`;
-    
-//     li.appendChild(name);
-//     li.appendChild(fRating);
-//     eList.appendChild(li);
-//     div.appendChild(eList);
-    
-//     work.appendChild(div);
 //     // debugger;
 // }
 
