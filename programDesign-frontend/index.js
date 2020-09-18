@@ -7,7 +7,7 @@ const programFormContainer = () => document.getElementById("programFormContainer
 const allProgramBtn = () => document.getElementById('all-programs-btn')
 const workoutFormContainer = () => document.getElementById("workout-form-container")
 const workoutList = () => document.getElementById('workouts-list');
-const exerciseFormContainer = () => document.querySelector('#wo')
+
 document.addEventListener("DOMContentLoaded", callOnLoad)
 
 
@@ -359,11 +359,10 @@ function displayProgramWorkout(workout){
     view.id = workout.id;
     view.addEventListener('click', (e) => getWorkoutDetails(e.target.id))
     add.classList.add('btn');
-    add.innerText = 'View All Exercises';
+    add.innerText = 'Add New Exercise';
     add.id = workout.id;
     add.addEventListener('click', (e) => {
-        getListOfExercises()    
-        renderExerciseForm(e.target.id)
+        getListOfExercises(e.target.id)    
     })
     div.id = workout.id;
     div.classList.add('wo')
@@ -381,7 +380,7 @@ function showWorkoutDetails(workout){
     console.log('workoutList')
     workoutList().innerHTML = ""
     displayProgramWorkout(workout);
-    let btn = getElementById(`${workout.id}`)
+    // let btn = getElementById(`${workout.id}`)
     workout.exercises.forEach(exercise => displayExercise(exercise))
     
 }
@@ -418,8 +417,9 @@ function getWorkoutDetails(id){
 
 }
 function renderExerciseForm(id, exercises){
- let div = querySelector('#wo');
- let form = createElement('div')
+ let div = document.querySelector('.wo');
+ let form = document.createElement('div');
+ debugger;
  form.innerHTML = `
  <form>
  <div class="input-field"  name="split">
@@ -433,17 +433,20 @@ function renderExerciseForm(id, exercises){
     </form>
 </div>
  `
- $('select').formSelect()
-div.appendChild(form)
-form.addEventListener("submit", (event) => {
-    console.log("please work")
-    //  debugger;
-    event.preventDefault();
-    workoutFormSubmission();
+ $('select').formSelect();
+ form.addEventListener("submit", (event) => {
+     event.preventDefault();
+     exerciseFormSubmission();
+    });
+    div.appendChild(form)
+};
 
+function exerciseFormSubmission(){
+    let pick = document.getElementById("date").value;
 }
 
-function getListOfExercises(){
+
+function getListOfExercises(id){
     fetch(baseUrl +`/exercises`)
     .then(resp => {
         if (resp.status !== 200) {
@@ -452,21 +455,10 @@ function getListOfExercises(){
         return resp.json()
     })
     .catch(errors => console.log(errors))
-    .then(exercises => showWorkoutDetails(exercises))
+    .then(exercises => renderExerciseForm(id, exercises))
 
 }
-// function displayExercises(e, workout){
-//     e.preventDefault()
-//     const work = document.getElementById(`${workout.id}`);
-//     const addExerciseBtn = document.createElement('button')
 
-//     addExerciseBtn.classList.add('btn');
-//     addExerciseBtn.innerText = 'Add exercise';
-//     addExerciseBtn.id = workout.id;
-//     addExerciseBtn.addEventListener('click', () => {renderExerciseSelection()});
-
-//     // debugger;
-// }
 
 function renderWorkoutForm(e, program_id, workout = null){
     e.preventDefault();
@@ -507,23 +499,7 @@ function renderWorkoutForm(e, program_id, workout = null){
         event.preventDefault();
         workoutFormSubmission();
                     });
-    // if (program != null){
-    //             document.getElementById("form-header").innerHTML = "Edit Workout";
-    //             document.getElementById("description").value = program.description,
-    //             $("#split").val = program.split,
-    //             document.getElementById("length").value = program.length,
-    //             document.getElementById("goal").value = program.goal,
-    //             document.getElementById("weeklyVolume").value = program.weeklyVolume,
 
-    //             // debugger;
-        
-    //             programFormContainer().addEventListener("submit", (event) => {
-    //                 event.preventDefault(); 
-    //                 programUpdate(event, program.data.id);
-    //             })
-    //         } else{
-    //             ;
-    //         }
 }
 
 function workoutFormSubmission(){
