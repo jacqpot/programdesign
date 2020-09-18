@@ -15,7 +15,7 @@ function callOnLoad() {
     loadPrograms();
     programFormContainer().innerHTML = ''
     newProgramBtn().addEventListener("click", (event) => {renderProgramForm()});
-    allProgramBtn().addEventListener("click", (event) => {loadPrograms()});
+    allProgramBtn().addEventListener("click", () => {loadPrograms()});
 
       
 }
@@ -24,7 +24,7 @@ function loadPrograms() {
     
     programFormContainer().innerHTML = ''
     programList().innerHTML = ''
-    document.getElementById('workouts').innerHTML = ''
+    document.getElementById('workouts-list').innerHTML = ''
     fetch(baseUrl + '/programs')
     .then(resp => {
         if (resp.status !== 200) {
@@ -88,7 +88,7 @@ function deleteProgram(e){
         method: 'DELETE'
     })
     // debugger;
-    this.location.reload()
+    $("#div").load("#div > *");
 }
 function programUpdate(e, id) {
     e.preventDefault();
@@ -163,10 +163,10 @@ function renderProgramForm(program = null) {
         <div class="input-field"  name="split">
             <select id="split">
                 <option value="" disabled ${program ? '' : 'selected'}>Choose your option</option>
-                <option value="Total Body" ${program && program.data.attributes.length == "Total Body" ? 'selected' : ''} >Total Body</option>
-                <option value="Push, Pull, Legs" ${program && program.data.attributes.length == "Push, Pull, Legs" ? 'selected' : ''} >Push, Pull, Legs</option>
-                <option value="Upper, Lower" ${program && program.data.attributes.length == "Upper, Lower" ? 'selected' : ''} >Upper, Lower</option>
-                <option value="Body Part Split" ${program && program.data.attributes.length == "Body Part Split" ? 'selected' : ''} >Body Part Split</option>
+                <option value="Total Body" ${program && program.data.attributes.split == "Total Body" ? 'selected' : ''} >Total Body</option>
+                <option value="Push, Pull, Legs" ${program && program.data.attributes.split == "Push, Pull, Legs" ? 'selected' : ''} >Push, Pull, Legs</option>
+                <option value="Upper, Lower" ${program && program.data.attributes.split == "Upper, Lower" ? 'selected' : ''} >Upper, Lower</option>
+                <option value="Body Part Split" ${program && program.data.attributes.split == "Body Part Split" ? 'selected' : ''} >Body Part Split</option>
             </select>
             <label>Split:</label>
         </div>
@@ -273,12 +273,10 @@ function clearProgramList(e){
     e.preventDefault()
 
     let pn = e.target.parentNode
-    
-    console.log(pn);
     document.getElementById("program-list").innerHTML = "";
-    document.getElementById("workouts").innerHTML = "";
+    document.getElementById("workouts-list").innerHTML = "";
     
-            if (pn.classList.contains('program-card')){
+    if (pn.classList.contains('program-card')){
         getProgramDetails(e.target.id)
     } else {
         loadPrograms()
@@ -308,87 +306,103 @@ function displayChosenProgram(program, id){
     newWorkoutBtn.addEventListener('click', (e) => {renderWorkoutForm(e, id)});
     programList().appendChild(newWorkoutBtn);
     
-    program.included.forEach(workout => displayProgramWorkouts(workout.attributes, workout.id, id))
+    program.included.forEach(workout => displayProgramWorkout(workout.attributes, workout.id, id))
     
 };
 
-function displayProgramWorkouts(workout, id, programId){
+
+function displayProgramWorkout(workout, id, programId){
     const program = programId;
-    const workoutList = document.getElementById('workouts');
+    const workoutList = document.getElementById('workouts-list');
     const div = document.createElement('div');
     const description = document.createElement('p');
     const warmUp = document.createElement('p');
     const date = document.createElement('h2');
     const volume = document.createElement('p');
     const view = document.createElement("button");
-    const eList = document.createElement("ul");
-    const li = document.createElement("li");
-    const fRating = document.createElement('p');
-    const name = document.createElement('p')
     
-    fRating.innerText = `- Fatigue Rating: ${workout.exercise.fatigueRating}`;
-    name.innerText = `- Exercise Name: ${workout.exercise.name}`;
     warmUp.innerText = `- Warm up(if any): ${workout.warmUp}`;
     date.innerText = `Date: ${workout.date}`;
     description.innerText = `Body part(s) worked: ${workout.description}`
     volume.innerText = `- Number of sets: ${workout.volume}`;
     
     view.classList.add('btn');
-    view.innerText = 'view';
+    view.innerText = 'View All Exercises';
     view.id = id;
-    view.addEventListener('click', (e) => {viewWorkout(e, id)})
-    
+    view.addEventListener('click', (e) => {displayExercises(e, id)})
+    div.id = id;
     div.appendChild(date);
     div.appendChild(description);
     div.appendChild(warmUp);
     div.appendChild(volume);
+    div.appendChild(view);
+    workoutList.appendChild(div);
+    // debugger;
+}
+function displayExercises(e, id){
+    e.preventDefault()
+    const workoutList = document.getElementById(`${id}`);
+    const div = document.createElement('div');
+    const fRating = document.createElement('p');
+    const name = document.createElement('p')
+    const eList = document.createElement("ul");
+    const li = document.createElement("li");
+    const addExerciseBtn = document.createElement('button')
+
+    addExerciseBtn.classList.add('btn');
+    addExerciseBtn.innerText = 'Add exercise';
+    addExerciseBtn.id = id;
+    addExerciseBtn.addEventListener('click', () => {renderExerciseSelection()})
+
+    fRating.innerText = `- Fatigue Rating: ${workout.exercise.fatigueRating}`;
+    name.innerText = `- Exercise Name: ${workout.exercise.name}`;
+    
     li.appendChild(name);
     li.appendChild(fRating);
     eList.appendChild(li);
     div.appendChild(eList);
+    
     workoutList.appendChild(div);
-    // debugger;
-}
-function viewWorkout(e){
-    e.preventDefault()
 }
 
-function renderWorkoutForm(e, workout_id, workout = null){
+function renderWorkoutForm(e, program_id, workout = null){
     e.preventDefault();
     
     workoutFormContainer().innerHTML = 
     `
-    console.log("here")
     <h1 id="form-header">Add Workout</h1>
     <form>
     Date: <input type="date" id="date"><br>
+
     <div class="input-field"  name="description">
-         <select id="description">
+         <select id="wdescription">
             <option value="" disabled ${workout ? '' : 'selected'}>Choose your option</option>
-            <option value="Total Body" ${workout && workout.data.attributes.length == "Total Body" ? 'selected' : ''} >Total Body</option>
-            <option value="Push" ${workout && workout.data.attributes.length == "Push" ? 'selected' : ''} >Push</option>
-            <option value="Pull" ${workout && workout.data.attributes.length == "Pull" ? 'selected' : ''} >Pull</option>
-            <option value="Legs" ${workout && workout.data.attributes.length == "Legs" ? 'selected' : ''} >Legs</option>
-            <option value="Upper Body" ${workout && workout.data.attributes.length == "Upper Body" ? 'selected' : ''} >Upper Body</option>
-            <option value="Lower Body" ${workout && workout.data.attributes.length == "Lower Body" ? 'selected' : ''} >Lower Body</option>
-            <option value="Chest" ${workout && workout.data.attributes.length == "Chest" ? 'selected' : ''} >Chest</option>
-            <option value="Back" ${workout && workout.data.attributes.length == "Back" ? 'selected' : ''} >Back</option>
-            <option value="Shoulders" ${workout && workout.data.attributes.length == "Shoulders" ? 'selected' : ''} >Shoulders</option>
-            <option value="Arms" ${workout && workout.data.attributes.length == "Arms" ? 'selected' : ''} >Arms</option>
-            <option value="Legs" ${workout && workout.data.attributes.length == "Legs" ? 'selected' : ''} >Legs</option>
+            <option value="Total Body" ${workout && workout.data.attributes.description == "Total Body" ? 'selected' : ''} >Total Body</option>
+            <option value="Push" ${workout && workout.data.attributes.description == "Push" ? 'selected' : ''} >Push</option>
+            <option value="Pull" ${workout && workout.data.attributes.description == "Pull" ? 'selected' : ''} >Pull</option>
+            <option value="Legs" ${workout && workout.data.attributes.description == "Legs" ? 'selected' : ''} >Legs</option>
+            <option value="Upper Body" ${workout && workout.data.attributes.description == "Upper Body" ? 'selected' : ''} >Upper Body</option>
+            <option value="Lower Body" ${workout && workout.data.attributes.description == "Lower Body" ? 'selected' : ''} >Lower Body</option>
+            <option value="Chest" ${workout && workout.data.attributes.description == "Chest" ? 'selected' : ''} >Chest</option>
+            <option value="Back" ${workout && workout.data.attributes.description == "Back" ? 'selected' : ''} >Back</option>
+            <option value="Shoulders" ${workout && workout.data.attributes.description == "Shoulders" ? 'selected' : ''} >Shoulders</option>
+            <option value="Arms" ${workout && workout.data.attributes.description == "Arms" ? 'selected' : ''} >Arms</option>
+            <option value="Legs" ${workout && workout.data.attributes.description == "Legs" ? 'selected' : ''} >Legs</option>
          </select>
          <label>Muscle Groups worked:</label>
      </div>
      Total working sets per primary muscle group worked: <input type="integer" id="volume"><br>
      warmUp: <input type="integer" id="warmUp"><br>
-     <input type="hidden" id="workout_id" name="workout_id" value="${workout_id}">
+     <input type="hidden" id="program_id" name="program_id" value="${program_id}">
      <input type="submit" value="Create">
     </form>
     `
     $('select').formSelect()
     workoutFormContainer().addEventListener("submit", (event) => {
+        console.log("please work")
+        //  debugger;
         event.preventDefault();
-        workoutFormSubmission(event);
+        workoutFormSubmission();
                     });
     // if (program != null){
     //             document.getElementById("form-header").innerHTML = "Edit Workout";
@@ -409,36 +423,42 @@ function renderWorkoutForm(e, workout_id, workout = null){
     //         }
 }
 
-function workoutFormSubmission(event){
-    event.preventDefault()
+function workoutFormSubmission(){
+    
     let date = document.getElementById("date").value;
-    let description = document.getElementById("description").value;
+    let description = document.getElementById("wdescription").value;
     let volume = document.getElementById("volume").value;
     let warmUp = document.getElementById("warmUp").value;
-    let programId = document.getElementById("workout_id").value;
+    let programId = document.getElementById("program_id").value;
+    
+    
     let workout = {
         workout: {
             date: date,
             description: description,
             volume: volume,
             warmUp: warmUp,
-            program_id: programId
+            program_id: programId,
+            exercise_id: null 
         }
     }
-
+    console.log('workout')
     fetch(baseUrl + `/workouts`, {
         method: "post",
         headers: {
-             'Accept': 'application/json',
-             'Content-type': 'application/json'
+            'Accept': 'application/json',
+            'Content-type': 'application/json'
         },
         body: JSON.stringify(workout)
     })
     .then(resp => resp.json())
     .then(workout => {
         Workout.create(workout.id, workout.Program_id, workout.volume, workout.warmUp, workout.date, workout.description)
-        displayProgramWorkouts(Workout.all.last)
+         debugger;
+        // displayProgramWorkout(Workout.all.last)
+        displayChosenProgram(Workout.all.last, Workout.all.last.program_id)
     })
     workoutFormContainer().innerHTML = ""
 }
+
 

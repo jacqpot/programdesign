@@ -20,7 +20,7 @@ class WorkoutsController < ApplicationController
   # POST /workouts
   def create
     @workout = Workout.new(workout_params)
-
+    # byebug
     if @workout.save
       render json: @workout, status: :created, location: @workout
     else
@@ -50,6 +50,6 @@ class WorkoutsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def workout_params
-      params.require(:workout).permit(:volume, :description, :warmUp, :date)
+      params.require(:workout).permit(:volume, :description, :warmUp, :date, :program_id, :exercise_id)
     end
 end

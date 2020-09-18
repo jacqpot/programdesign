@@ -6,7 +6,7 @@ class Workout{
         this.date = date;
         this.program_id = program_id;
         this.id = id;
-    }
+    };
 
     static all = []
 
@@ -14,5 +14,5 @@ class Workout{
         let program = new Workout(id, description, volume, warmUp, date, program_id)
         Workout.all.push(program)
         return this 
-    }
+    };
 }
