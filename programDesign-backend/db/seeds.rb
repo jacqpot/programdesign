@@ -15,7 +15,9 @@
     Exercise.create(name: 'Barbell Military Press', description: 'Grab the bar shoulder width apart. Push straight overhead so the biceps are by your ears. slowly bring barbell back down in front. stop at neck hight', fatigueRating: 3, bodyPart: 'Shoulders')
     Exercise.create(name: 'Barbell Bent over Row', description: 'Stand with a shoulder-width stance. Grab the barbell, wider than shoulder-width, with an overhand grip. Bending your knees slightly, and your core tight, bend over at the waist keeping your lower back tight. Bending over until your upper body is at a 45-degree bend or lower, pull the bar up towards your lower chest.', fatigueRating: 3, bodyPart: 'Back')
 
-    Workout.create(description: 'Push', warmUp: '', volume: 0, date: '2020-09-11', program_id: 1, exercise_id: 1)
-    Workout.create(description: 'Pull', warmUp: '', volume: 0, date: '2020-09-11', program_id: 1, exercise_id: 2)
-    Workout.create(description: 'Total Body', warmUp: '', volume: 0, date: '2020-09-11', program_id: 2, exercise_id: 1)
-    Workout.create(description: 'Total Body', warmUp: '', volume: 0, date: '2020-09-11', program_id: 2, exercise_id: 1)
+    Workout.create(description: 'Push', warmUp: '', volume: 0, date: '2020-09-11', program_id: 1)
+    Workout.create(description: 'Pull', warmUp: '', volume: 0, date: '2020-09-11', program_id: 1)
+    Workout.create(description: 'Total Body', warmUp: '', volume: 0, date: '2020-09-11', program_id: 2)
+    Workout.create(description: 'Total Body', warmUp: '', volume: 0, date: '2020-09-11', program_id: 2)
+
+    

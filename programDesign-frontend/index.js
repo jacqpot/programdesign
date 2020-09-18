@@ -314,7 +314,7 @@ function displayChosenProgram(program, id){
     program.included.forEach(workout => {
         Workout.create(workout.id, workout.Program_id, workout.volume, workout.warmUp, workout.date, workout.description)
 
-        displayProgramWorkout(workout.attributes, workout.id, id}))
+        displayProgramWorkout(workout.attributes, workout.id, id)})
     
 };
 
@@ -337,7 +337,7 @@ function displayProgramWorkout(workout, id, programId){
     view.classList.add('btn');
     view.innerText = 'View All Exercises';
     view.id = id;
-    view.addEventListener('click', (e) => {displayExercises(e, id)})
+    view.addEventListener('click', (e) => {displayExercises(e, id, workout)})
     div.id = id;
     div.appendChild(date);
     div.appendChild(description);
@@ -347,7 +347,7 @@ function displayProgramWorkout(workout, id, programId){
     workoutList.appendChild(div);
     // debugger;
 }
-function displayExercises(e, id){
+function displayExercises(e, id, workout){
     e.preventDefault()
     const workoutList = document.getElementById(`${id}`);
     const div = document.createElement('div');
@@ -360,10 +360,10 @@ function displayExercises(e, id){
     addExerciseBtn.classList.add('btn');
     addExerciseBtn.innerText = 'Add exercise';
     addExerciseBtn.id = id;
-    addExerciseBtn.addEventListener('click', () => {renderExerciseSelection()})
+    addExerciseBtn.addEventListener('click', () => {renderExerciseSelection()});
 
     fRating.innerText = `- Fatigue Rating: ${workout.exercise.fatigueRating}`;
-    name.innerText = `- Exercise Name: ${workout.exercise.name}`;
+    name.innerText = `-${workout.exercise.name},`;
     
     li.appendChild(name);
     li.appendChild(fRating);
@@ -371,6 +371,7 @@ function displayExercises(e, id){
     div.appendChild(eList);
     
     workoutList.appendChild(div);
+    debugger;
 }
 
 function renderWorkoutForm(e, program_id, workout = null){

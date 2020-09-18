@@ -6,15 +6,13 @@ class WorkoutsController < ApplicationController
   def index
     @workouts = Workout.all
 
-    render json: WorkoutSerializer.new(@workouts)
+    render json: @workouts, include: [:exercises]
   end
 
   # GET /workouts/1
   def show
-    options = {
-      include: [:program, :exercise]
-    }
-    render json: WorkoutSerializer.new(@workout, options)
+
+    render json: @workout, include: [:exercises]
   end
 
   # POST /workouts

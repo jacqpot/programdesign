@@ -1,32 +1,20 @@
 class ExercisesController < ApplicationController
   before_action :set_exercise, only: [:show, :update, :destroy]
-  # def show
-  #   sighting = Sighting.find_by(id: params[:id])
-  #   options = {
-  #     include: [:bird, :location]
-  #   }
-  #   render json: SightingSerializer.new(sighting, options)
-  # end
+
   # GET /exercises
   def index
     @exercises = Exercise.all
     options = {
       include: [:workouts]
     }
-    render json: ExerciseSerializer.new(@exercises, options)
+    render json: include: [@exercises]
   end
-  # def show
-  #   options = {
-  #     include: [:workouts]
-  #   }
-  #   render json: ProgramSerializer.new(@program, options)
-  # end
-  # GET /exercises/1
+
   def show
     options = {
       include: [:workouts]
     }
-    render json: ExerciseSerializer.new(@exercise, options)
+    render json: ExerciseSerializer.new(@exercise)
   end
 
   # POST /exercises

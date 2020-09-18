@@ -6,7 +6,6 @@ class CreateWorkouts < ActiveRecord::Migration[6.0]
       t.string :warmUp
       t.date :date
       t.references :program
-      t.references :exercise
       t.timestamps
     end
   end
