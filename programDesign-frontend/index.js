@@ -21,7 +21,7 @@ function callOnLoad() {
 }
 
 function loadPrograms() {
-    
+    Program.all = []
     programFormContainer().innerHTML = ''
     programList().innerHTML = ''
     document.getElementById('workouts-list').innerHTML = ''
@@ -37,12 +37,19 @@ function loadPrograms() {
 };
 
 function displayPrograms(programs){
-    programs.data.forEach(program => displayProgram(program.attributes, program.id))
+    programs.data.forEach(program => {
+        
+        displayProgram(program.attributes, program.id)
+        let id = program.id
+        // debugger;
+        Program.create(id, program.attributes.title, program.attributes.split, program.attributes.length, program.attributes.goal, program.attributes.weeklyVolume, program.attributes.workoutsPerWeek, program.attributes.startdate)
+    })
 };
 
 
 function displayProgram(program, id) {
-
+    // debugger;
+    console.log(Program.all.length)
     const div = document.createElement('div');
     div.classList.add('program-card')
     const h1 = document.createElement('h1');
@@ -83,7 +90,9 @@ function displayProgram(program, id) {
 };
 
 function deleteProgram(e){
-    let programId = parseInt(e.target.id)
+    let programId = parseInt(e.target.id);
+    let program = e.target.parentNode;
+    program.parentNode.removeChild(program);
     fetch(`${baseUrl}/programs/${programId}`,{
         method: 'DELETE'
     })
@@ -216,7 +225,7 @@ $('select').formSelect();
     } else{
         programFormContainer().addEventListener("submit", (event) => {
             event.preventDefault();
-            programFormSubmission(event);
+            programFormSubmission();
         });
     }
         
@@ -228,8 +237,7 @@ $('select').formSelect();
         //     obj.options[obj.selectedIndex].text;
         //   }
         
-function programFormSubmission(event){
-    event.preventDefault()
+function programFormSubmission(){
     let title = document.getElementById("ptitle").value 
     let split = document.getElementById("split").value 
     
@@ -259,14 +267,11 @@ function programFormSubmission(event){
         },
         body: JSON.stringify(program)
     })
-    .then(resp => resp.json())
-    .then(program => {
-        // debugger;
-        Program.create(program.id, program.title, program.split, program.length, program.goal, program.weeklyVolume, program.workoutsPerWeek, program.startdate)
-        displayProgram(Program.all.last)
-    })
-    debugger;
-    programFormContainer().innerHTML = ""
+    .then(resp => resp.json());
+    Program.all.length = 0;
+
+    programFormContainer().innerHTML = "";
+    loadPrograms();
 }
 
 function clearProgramList(e){
@@ -306,7 +311,10 @@ function displayChosenProgram(program, id){
     newWorkoutBtn.addEventListener('click', (e) => {renderWorkoutForm(e, id)});
     programList().appendChild(newWorkoutBtn);
     
-    program.included.forEach(workout => displayProgramWorkout(workout.attributes, workout.id, id))
+    program.included.forEach(workout => {
+        Workout.create(workout.id, workout.Program_id, workout.volume, workout.warmUp, workout.date, workout.description)
+
+        displayProgramWorkout(workout.attributes, workout.id, id}))
     
 };
 
@@ -453,10 +461,9 @@ function workoutFormSubmission(){
     })
     .then(resp => resp.json())
     .then(workout => {
-        Workout.create(workout.id, workout.Program_id, workout.volume, workout.warmUp, workout.date, workout.description)
          debugger;
         // displayProgramWorkout(Workout.all.last)
-        displayChosenProgram(Workout.all.last, Workout.all.last.program_id)
+        displayChosenProgram(workout, workout.program_id)
     })
     workoutFormContainer().innerHTML = ""
 }
