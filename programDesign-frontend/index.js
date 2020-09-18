@@ -173,30 +173,30 @@ function renderProgramForm(program = null) {
         <div class="input-field"  name="split">
             <select id="split">
                 <option value="" disabled ${program ? '' : 'selected'}>Choose your option</option>
-                <option value="Total Body" ${program && program.data.attributes.split == "Total Body" ? 'selected' : ''} >Total Body</option>
-                <option value="Push, Pull, Legs" ${program && program.data.attributes.split == "Push, Pull, Legs" ? 'selected' : ''} >Push, Pull, Legs</option>
-                <option value="Upper, Lower" ${program && program.data.attributes.split == "Upper, Lower" ? 'selected' : ''} >Upper, Lower</option>
-                <option value="Body Part Split" ${program && program.data.attributes.split == "Body Part Split" ? 'selected' : ''} >Body Part Split</option>
+                <option value="Total Body" ${program && program.split == "Total Body" ? 'selected' : ''} >Total Body</option>
+                <option value="Push, Pull, Legs" ${program && program.split == "Push, Pull, Legs" ? 'selected' : ''} >Push, Pull, Legs</option>
+                <option value="Upper, Lower" ${program && program.split == "Upper, Lower" ? 'selected' : ''} >Upper, Lower</option>
+                <option value="Body Part Split" ${program && program.split == "Body Part Split" ? 'selected' : ''} >Body Part Split</option>
             </select>
             <label>Split:</label>
         </div>
         <div class="input-field"  name="length">
             <select id="length">
                 <option value="" disabled ${program ? '' : 'selected'}>Choose your option</option>
-                <option value="4" " ${program && program.data.attributes.length == "4" ? 'selected' : ''} >4 weeks</option>
-                <option value="8"" ${program && program.data.attributes.length == "8" ? 'selected' : ''} >8 weeks</option>
-                <option value="12"" ${program && program.data.attributes.length == "12" ? 'selected' : ''} >12 weeks</option>
+                <option value="4" " ${program && program.length == "4" ? 'selected' : ''} >4 weeks</option>
+                <option value="8"" ${program && program.length == "8" ? 'selected' : ''} >8 weeks</option>
+                <option value="12"" ${program && program.length == "12" ? 'selected' : ''} >12 weeks</option>
             </select>
             <label>length:</label>
         </div>
         <div class="input-field"  name="goal">
             <select id="goal">
                 <option value="" disabled ${program ? '' : 'selected'}>Choose your option</option>
-                <option value="Power" ${program && program.data.attributes.goal == "Power" ? 'selected' : ''} >Power</option>
-                <option value="Strength" ${program && program.data.attributes.goal == "Strength" ? 'selected' : ''} >Strength</option>
-                <option value="Hypertrophy" ${program && program.data.attributes.goal == "Hypertrophy" ? 'selected' : ''} >Hypertrophy</option>
-                <option value="Endurance" ${program && program.data.attributes.goal == "Endurance" ? 'selected' : ''} >Endurance</option>
-                <option value="Stability" ${program && program.data.attributes.goal == "Stability" ? 'selected' : ''} >Stability</option>
+                <option value="Power" ${program && program.goal == "Power" ? 'selected' : ''} >Power</option>
+                <option value="Strength" ${program && program.goal == "Strength" ? 'selected' : ''} >Strength</option>
+                <option value="Hypertrophy" ${program && program.goal == "Hypertrophy" ? 'selected' : ''} >Hypertrophy</option>
+                <option value="Endurance" ${program && program.goal == "Endurance" ? 'selected' : ''} >Endurance</option>
+                <option value="Stability" ${program && program.goal == "Stability" ? 'selected' : ''} >Stability</option>
             </select>
             <label>Goal:</label>
         </div>
@@ -211,9 +211,9 @@ $('select').formSelect();
     if (program != null){
         document.getElementById("form-header").innerHTML = "Edit Program";
         document.getElementById("ptitle").value = program.data.attributes.title,
-        $("#split").val = program.data.attributes.split,
+        $("#split").val = program.split,
         document.getElementById("length").value = program.data.attributes.length,
-        document.getElementById("goal").value = program.data.attributes.goal,
+        document.getElementById("goal").value = program.goal,
         document.getElementById("weeklyVolume").value = program.data.attributes.weeklyVolume,
         document.getElementById("workoutsPerWeek").value = program.data.attributes.workoutsPerWeek,
         document.getElementById("startdate").value = program.data.attributes.startDate
@@ -311,7 +311,7 @@ function displayChosenProgram(program){
     newWorkoutBtn.classList.add('btn');
     newWorkoutBtn.innerText = 'Add New Workout';
     newWorkoutBtn.id = program.id;
-    newWorkoutBtn.addEventListener('click', (e) => {renderWorkoutForm(e, id)});
+    newWorkoutBtn.addEventListener('click', (e) => {renderWorkoutForm(e, program.id)});
     programList().appendChild(newWorkoutBtn);
     
     program.workouts.forEach(workout => {
@@ -340,7 +340,9 @@ function displayProgramWorkout(workout){
     view.classList.add('btn');
     view.innerText = 'View All Exercises';
     view.id = workout.id;
-    view.addEventListener('click', (e) => {displayExercises(e, workout)})
+    view.addEventListener('click', (e) => {
+        workouts.exercises.forEach(exercise => {
+        displayExercises(e, exercise)})})
     div.id = workout.id;
     div.appendChild(date);
     div.appendChild(description);
@@ -352,7 +354,7 @@ function displayProgramWorkout(workout){
 }
 function displayExercises(e, workout){
     e.preventDefault()
-    const workoutList = document.getElementById(`${id}`);
+    const work = document.getElementById(`${workout.id}`);
     const div = document.createElement('div');
     const fRating = document.createElement('p');
     const name = document.createElement('p')
@@ -362,7 +364,7 @@ function displayExercises(e, workout){
 
     addExerciseBtn.classList.add('btn');
     addExerciseBtn.innerText = 'Add exercise';
-    addExerciseBtn.id = id;
+    addExerciseBtn.id = workout.id;
     addExerciseBtn.addEventListener('click', () => {renderExerciseSelection()});
 
     fRating.innerText = `- Fatigue Rating: ${workout.exercise.fatigueRating}`;
@@ -373,7 +375,7 @@ function displayExercises(e, workout){
     eList.appendChild(li);
     div.appendChild(eList);
     
-    workoutList.appendChild(div);
+    work.appendChild(div);
     debugger;
 }
 
@@ -419,9 +421,9 @@ function renderWorkoutForm(e, program_id, workout = null){
     // if (program != null){
     //             document.getElementById("form-header").innerHTML = "Edit Workout";
     //             document.getElementById("description").value = program.data.attributes.description,
-    //             $("#split").val = program.data.attributes.split,
+    //             $("#split").val = program.split,
     //             document.getElementById("length").value = program.data.attributes.length,
-    //             document.getElementById("goal").value = program.data.attributes.goal,
+    //             document.getElementById("goal").value = program.goal,
     //             document.getElementById("weeklyVolume").value = program.data.attributes.weeklyVolume,
 
     //             // debugger;
@@ -465,10 +467,10 @@ function workoutFormSubmission(){
     })
     .then(resp => resp.json())
     .then(workout => {
-         debugger;
         // displayProgramWorkout(Workout.all.last)
-        displayChosenProgram(workout, workout.program_id)
+        getProgramDetails(workout.program_id)
     })
+    debugger;
     workoutFormContainer().innerHTML = ""
 }
 
