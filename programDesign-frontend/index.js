@@ -7,7 +7,7 @@ const programFormContainer = () => document.getElementById("programFormContainer
 const allProgramBtn = () => document.getElementById('all-programs-btn')
 const workoutFormContainer = () => document.getElementById("workout-form-container")
 const workoutList = () => document.getElementById('workouts-list');
-
+const exerciseFormContainer = () => document.querySelector('#wo')
 document.addEventListener("DOMContentLoaded", callOnLoad)
 
 
@@ -361,8 +361,12 @@ function displayProgramWorkout(workout){
     add.classList.add('btn');
     add.innerText = 'View All Exercises';
     add.id = workout.id;
-    add.addEventListener('click', (e) => renderExerciseForm(e.target.id))
+    add.addEventListener('click', (e) => {
+        getListOfExercises()    
+        renderExerciseForm(e.target.id)
+    })
     div.id = workout.id;
+    div.classList.add('wo')
     div.appendChild(date);
     div.appendChild(description);
     div.appendChild(warmUp);
@@ -413,7 +417,44 @@ function getWorkoutDetails(id){
     .then(workout => showWorkoutDetails(workout))
 
 }
+function renderExerciseForm(id, exercises){
+ let div = querySelector('#wo');
+ let form = createElement('div')
+ form.innerHTML = `
+ <form>
+ <div class="input-field"  name="split">
+    <select id="exercise">
+        <option value="" disabled 'selected'>Choose your option</option>
+        ${exercises.map(exercise => `<option value="${exercise.id}">${exercise.name}</option>`)}
+        </select>
+        <label>exercise:</label>
+        <input type="hidden" id="workout_id" name="workout_id" value="${id}">
+        <input type="submit" value="Create">
+    </form>
+</div>
+ `
+ $('select').formSelect()
+div.appendChild(form)
+form.addEventListener("submit", (event) => {
+    console.log("please work")
+    //  debugger;
+    event.preventDefault();
+    workoutFormSubmission();
 
+}
+
+function getListOfExercises(){
+    fetch(baseUrl +`/exercises`)
+    .then(resp => {
+        if (resp.status !== 200) {
+            throw new error(resp.statusText);
+        }
+        return resp.json()
+    })
+    .catch(errors => console.log(errors))
+    .then(exercises => showWorkoutDetails(exercises))
+
+}
 // function displayExercises(e, workout){
 //     e.preventDefault()
 //     const work = document.getElementById(`${workout.id}`);
