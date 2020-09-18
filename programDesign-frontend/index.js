@@ -200,7 +200,7 @@ function renderProgramForm(program = null) {
             </select>
             <label>Goal:</label>
         </div>
-        Weekly Volume: <input type="integer" id="weeklyVolume"><br>
+        Weekly Volume per exercise: <input type="integer" id="weeklyVolume"><br>
         Workouts Per Week: <input type="integer" id="workoutsPerWeek"><br>
         Start Date: <input type="date" id="startdate"><br>
         <input type="submit" value="Create">
@@ -210,18 +210,18 @@ function renderProgramForm(program = null) {
 $('select').formSelect();
     if (program != null){
         document.getElementById("form-header").innerHTML = "Edit Program";
-        document.getElementById("ptitle").value = program.data.attributes.title,
+        document.getElementById("ptitle").value = program.title,
         $("#split").val = program.split,
-        document.getElementById("length").value = program.data.attributes.length,
+        document.getElementById("length").value = program.length,
         document.getElementById("goal").value = program.goal,
-        document.getElementById("weeklyVolume").value = program.data.attributes.weeklyVolume,
-        document.getElementById("workoutsPerWeek").value = program.data.attributes.workoutsPerWeek,
-        document.getElementById("startdate").value = program.data.attributes.startDate
+        document.getElementById("weeklyVolume").value = program.weeklyVolume,
+        document.getElementById("workoutsPerWeek").value = program.workoutsPerWeek,
+        document.getElementById("startdate").value = program.startDate
         // debugger;
 
         programFormContainer().addEventListener("submit", (event) => {
             event.preventDefault(); 
-            programUpdate(event, program.data.id);
+            programUpdate(event, program.id);
         })
     } else{
         programFormContainer().addEventListener("submit", (event) => {
@@ -290,7 +290,22 @@ function clearProgramList(e){
         loadPrograms()
     }
 }
-
+// function loadPrograms() {
+//     Program.all = []
+//     programFormContainer().innerHTML = ''
+//     programList().innerHTML = ''
+//     document.getElementById('workouts-list').innerHTML = ''
+    
+//     fetch(baseUrl + '/programs')
+//     .then(resp => {
+//         if (resp.status !== 200) {
+//             throw new error(resp.statusText);
+//         }
+//         return resp.json()
+//     })
+//     .catch(errors => console.log(errors))
+//     .then(programs => displayPrograms(programs))
+// };
 function getProgramDetails(id){
     fetch(baseUrl +`/programs/${id}`)
     .then(resp => {
@@ -331,7 +346,7 @@ function displayProgramWorkout(workout){
     const date = document.createElement('h2');
     const volume = document.createElement('p');
     const view = document.createElement("button");
-    
+    //  debugger;
     warmUp.innerText = `- Warm up(if any): ${workout.warmUp}`;
     date.innerText = `Date: ${workout.date}`;
     description.innerText = `Body part(s) worked: ${workout.description}`
@@ -341,8 +356,7 @@ function displayProgramWorkout(workout){
     view.innerText = 'View All Exercises';
     view.id = workout.id;
     view.addEventListener('click', (e) => {
-        workouts.exercises.forEach(exercise => {
-        displayExercises(e, exercise)})})
+        workout.exercises.forEach(exercise => displayExercises(e, exercise))})
     div.id = workout.id;
     div.appendChild(date);
     div.appendChild(description);
@@ -376,7 +390,7 @@ function displayExercises(e, workout){
     div.appendChild(eList);
     
     work.appendChild(div);
-    debugger;
+    // debugger;
 }
 
 function renderWorkoutForm(e, program_id, workout = null){
@@ -420,11 +434,11 @@ function renderWorkoutForm(e, program_id, workout = null){
                     });
     // if (program != null){
     //             document.getElementById("form-header").innerHTML = "Edit Workout";
-    //             document.getElementById("description").value = program.data.attributes.description,
+    //             document.getElementById("description").value = program.description,
     //             $("#split").val = program.split,
-    //             document.getElementById("length").value = program.data.attributes.length,
+    //             document.getElementById("length").value = program.length,
     //             document.getElementById("goal").value = program.goal,
-    //             document.getElementById("weeklyVolume").value = program.data.attributes.weeklyVolume,
+    //             document.getElementById("weeklyVolume").value = program.weeklyVolume,
 
     //             // debugger;
         
@@ -470,7 +484,7 @@ function workoutFormSubmission(){
         // displayProgramWorkout(Workout.all.last)
         getProgramDetails(workout.program_id)
     })
-    debugger;
+    // debugger;
     workoutFormContainer().innerHTML = ""
 }
 
