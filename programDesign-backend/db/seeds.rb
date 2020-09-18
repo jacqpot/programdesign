@@ -20,4 +20,9 @@
     Workout.create(description: 'Total Body', warmUp: '', volume: 0, date: '2020-09-11', program_id: 2)
     Workout.create(description: 'Total Body', warmUp: '', volume: 0, date: '2020-09-11', program_id: 2)
 
-    
+    ExercisesWorkout.create(exercise_id: 1, workout_id: 3)
+    ExercisesWorkout.create(exercise_id: 2, workout_id: 3)
+    ExercisesWorkout.create(exercise_id: 3, workout_id: 3)
+    ExercisesWorkout.create(exercise_id: 4, workout_id: 3)
+    ExercisesWorkout.create(exercise_id: 1, workout_id: 1)
+    ExercisesWorkout.create(exercise_id: 3, workout_id: 1)

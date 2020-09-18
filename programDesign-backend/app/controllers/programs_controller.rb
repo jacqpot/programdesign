@@ -5,17 +5,16 @@ class ProgramsController < ApplicationController
   def index
     @programs = Program.all
     options = {
-      include: [:workouts]
+      include: [:workouts, :exercises]
     }
-    render json: ProgramSerializer.new(@programs, options)
+    
+    render json: @programs, include: [:workouts, :exercises]
   end
 
   # GET /programs/1
   def show
-    options = {
-      include: [:workouts]
-    }
-    render json: ProgramSerializer.new(@program, options)
+    
+    render json: @program, include: [:workouts, :exercises]
   end
 
   # POST /programs

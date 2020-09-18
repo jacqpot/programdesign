@@ -7,7 +7,7 @@ class ExercisesController < ApplicationController
     options = {
       include: [:workouts]
     }
-    render json: include: [@exercises]
+    render json: @exercises, include: [:workouts]
   end
 
   def show

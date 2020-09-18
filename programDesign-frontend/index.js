@@ -25,6 +25,7 @@ function loadPrograms() {
     programFormContainer().innerHTML = ''
     programList().innerHTML = ''
     document.getElementById('workouts-list').innerHTML = ''
+    
     fetch(baseUrl + '/programs')
     .then(resp => {
         if (resp.status !== 200) {
@@ -37,18 +38,18 @@ function loadPrograms() {
 };
 
 function displayPrograms(programs){
-    programs.data.forEach(program => {
+    programs.forEach(program => {
         
-        displayProgram(program.attributes, program.id)
-        let id = program.id
-        // debugger;
-        Program.create(id, program.attributes.title, program.attributes.split, program.attributes.length, program.attributes.goal, program.attributes.weeklyVolume, program.attributes.workoutsPerWeek, program.attributes.startdate)
+        displayProgram(program)
+        
+        //  debugger;
+        Program.create(program.id, program.title, program.split, program.length, program.goal, program.weeklyVolume, program.workoutsPerWeek, program.startdate)
     })
 };
 
 
-function displayProgram(program, id) {
-    // debugger;
+function displayProgram(program) {
+    //  debugger;
     console.log(Program.all.length)
     const div = document.createElement('div');
     div.classList.add('program-card')
@@ -61,17 +62,17 @@ function displayProgram(program, id) {
     const view = document.createElement('button')
     deleteButton.classList.add('btn');
     deleteButton.innerText = 'delete'
-    deleteButton.id = id;
+    deleteButton.id = program.id;
     deleteButton.addEventListener('click', deleteProgram)
     
     editButton.classList.add('btn');
     editButton.innerText = 'edit';
-    editButton.id = id;
+    editButton.id = program.id;
     editButton.addEventListener('click', editProgram)
     
     view.classList.add('btn');
     view.innerText = 'view';
-    view.id = id;
+    view.id = program.id;
     view.addEventListener('click', (e) => {clearProgramList(e)})
     
     h1.innerText = program.title;
@@ -276,20 +277,22 @@ function programFormSubmission(){
 
 function clearProgramList(e){
     e.preventDefault()
-
+    
     let pn = e.target.parentNode
+    let id = parseInt(e.target.id)
     document.getElementById("program-list").innerHTML = "";
     document.getElementById("workouts-list").innerHTML = "";
     
     if (pn.classList.contains('program-card')){
-        getProgramDetails(e.target.id)
+        // debugger
+        getProgramDetails(id)
     } else {
         loadPrograms()
     }
 }
 
 function getProgramDetails(id){
-    fetch(baseUrl + '/programs/'+ id)
+    fetch(baseUrl +`/programs/${id}`)
     .then(resp => {
         if (resp.status !== 200) {
             throw new error(resp.statusText);
@@ -297,30 +300,30 @@ function getProgramDetails(id){
         return resp.json()
     })
     .catch(errors => console.log(errors))
-    .then(program => displayChosenProgram(program, id))
+    .then(program => displayChosenProgram(program))
+    // debugger;
 }
 
-function displayChosenProgram(program, id){
-
-    displayProgram(program.data.attributes, id)
+function displayChosenProgram(program){
+    displayProgram(program)
     
     let newWorkoutBtn = document.createElement('button')
     newWorkoutBtn.classList.add('btn');
     newWorkoutBtn.innerText = 'Add New Workout';
-    newWorkoutBtn.id = id;
+    newWorkoutBtn.id = program.id;
     newWorkoutBtn.addEventListener('click', (e) => {renderWorkoutForm(e, id)});
     programList().appendChild(newWorkoutBtn);
     
-    program.included.forEach(workout => {
-        Workout.create(workout.id, workout.Program_id, workout.volume, workout.warmUp, workout.date, workout.description)
+    program.workouts.forEach(workout => {
+        Workout.create(workout.id, workout.program_id, workout.volume, workout.warmUp, workout.date, workout.description)
 
-        displayProgramWorkout(workout.attributes, workout.id, id)})
+        displayProgramWorkout(workout)})
     
 };
 
 
-function displayProgramWorkout(workout, id, programId){
-    const program = programId;
+function displayProgramWorkout(workout){
+    const program = workout.program_id;
     const workoutList = document.getElementById('workouts-list');
     const div = document.createElement('div');
     const description = document.createElement('p');
@@ -336,9 +339,9 @@ function displayProgramWorkout(workout, id, programId){
     
     view.classList.add('btn');
     view.innerText = 'View All Exercises';
-    view.id = id;
-    view.addEventListener('click', (e) => {displayExercises(e, id, workout)})
-    div.id = id;
+    view.id = workout.id;
+    view.addEventListener('click', (e) => {displayExercises(e, workout)})
+    div.id = workout.id;
     div.appendChild(date);
     div.appendChild(description);
     div.appendChild(warmUp);
@@ -347,7 +350,7 @@ function displayProgramWorkout(workout, id, programId){
     workoutList.appendChild(div);
     // debugger;
 }
-function displayExercises(e, id, workout){
+function displayExercises(e, workout){
     e.preventDefault()
     const workoutList = document.getElementById(`${id}`);
     const div = document.createElement('div');
