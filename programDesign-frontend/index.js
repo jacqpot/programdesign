@@ -51,6 +51,7 @@ function displayPrograms(programs){
 
 function displayProgram(program) {
     //  debugger;
+    programList().innerHtml = "";
     console.log(Program.all.length)
     const div = document.createElement('div');
     div.classList.add('program-card')
@@ -201,7 +202,7 @@ function renderProgramForm(program = null) {
             </select>
             <label>Goal:</label>
         </div>
-        Weekly Volume per exercise: <input type="integer" id="weeklyVolume"><br>
+        Weekly Volume per Muscle Group: <input type="integer" id="weeklyVolume"><br>
         Workouts Per Week: <input type="integer" id="workoutsPerWeek"><br>
         Start Date: <input type="date" id="startdate"><br>
         <input type="submit" value="Create">
@@ -277,8 +278,7 @@ function programFormSubmission(){
 }
 
 function clearProgramList(e){
-    e.preventDefault()
-    
+   
     let pn = e.target.parentNode
     let id = parseInt(e.target.id)
     document.getElementById("program-list").innerHTML = "";
@@ -437,11 +437,11 @@ function renderExerciseForm(id, exercises){
  $('select').formSelect();
  form.addEventListener("submit", (event) => {
      event.preventDefault();
-     exerciseFormSubmission();
+     exerciseFormSubmission(id);
     });
 };
 
-function exerciseFormSubmission(){
+function exerciseFormSubmission(id){
     let form = document.createElement('div');
     let pick = document.getElementById("exercise").value;
     let workoutId = document.getElementById("workout_id").value;
@@ -465,6 +465,7 @@ function exerciseFormSubmission(){
     .then(resp => resp.json())
     
     form.innerHTML = ""
+    getWorkoutDetails(id)
 }
 
 
