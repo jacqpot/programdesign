@@ -444,27 +444,26 @@ function renderExerciseForm(id, exercises){
 function exerciseFormSubmission(){
     let form = document.createElement('div');
     let pick = document.getElementById("exercise").value;
-    let workoutId = document.getElementById("workout_id")
+    let workoutId = document.getElementById("workout_id").value;
 
     let workoutExercises = {
-        exercises: {
+        exercises_workouts: {
             exercise_id: pick,
-            workout_id: workoutId 
+            workout_id: workoutId
+        
         }
     }
-
-    fetch(baseUrl + `/workouts`,{
+// debugger;
+    fetch(baseUrl + `/exercises_workouts`,{
         method: "post",
         headers: {
             'Accept': 'application/json',
             'Content-type': 'application/json'
         },
-        body: JSON.stringify(workout)
+        body: JSON.stringify(workoutExercises)
     })
     .then(resp => resp.json())
-    .then(workout => {
-        showWorkoutDetails(workout)
-    })
+    
     form.innerHTML = ""
 }
 
