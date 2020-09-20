@@ -289,3 +289,20 @@ function clearProgramList(e){
         loadPrograms()
     }
 }
+
+function displayChosenProgram(program){
+    displayProgram(program)
+    
+    let newWorkoutBtn = document.createElement('button')
+    newWorkoutBtn.classList.add('btn');
+    newWorkoutBtn.innerText = 'Add New Workout';
+    newWorkoutBtn.id = program.id;
+    newWorkoutBtn.addEventListener('click', (e) => {renderWorkoutForm(e, program.id)});
+    programList().appendChild(newWorkoutBtn);
+    
+    program.workouts.forEach(workout => {
+        Workout.create(workout.id, workout.program_id, workout.volume, workout.warmUp, workout.date, workout.description)
+
+        displayProgramWorkout(workout)})
+    
+};
