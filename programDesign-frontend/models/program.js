@@ -99,7 +99,12 @@ function deleteProgram(e){
     })
     // debugger;
     $("#div").load("#div > *");
+    let p = Program.all.findIndex(program => program.id == programId)
+
+     Program.all.splice(p,1)
 }
+
+
 function programUpdate(e, id) {
     e.preventDefault();
     let title = document.getElementById("ptitle").value;
@@ -226,6 +231,7 @@ $('select').formSelect();
     } else{
         programFormContainer().addEventListener("submit", (event) => {
             event.preventDefault();
+            // debugger;
             programFormSubmission();
         });
     }
@@ -268,11 +274,12 @@ function programFormSubmission(){
         },
         body: JSON.stringify(program)
     })
-    .then(resp => resp.json());
-    Program.all.length = 0;
+    .then(resp => resp.json())
+    .then(response => {
+        programFormContainer().innerHTML = "";
+        loadPrograms();
+    })
 
-    programFormContainer().innerHTML = "";
-    loadPrograms();
 }
 
 function clearProgramList(e){

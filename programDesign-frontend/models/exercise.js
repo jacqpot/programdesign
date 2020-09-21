@@ -1,4 +1,35 @@
 
+class Exercise{
+    constructor(id, bodyPart, fatigueRating, name, description){
+        this.bodyPart = bodyPart;
+        this.fatigueRating = fatigueRating;
+        this.name = name;
+        this.description = description;
+        this.id = id;
+    };
+
+    static all = []
+
+    static create(id, bodyPart, fatigueRating, name, description){
+        let exercise = new Exercise(id, bodyPart, fatigueRating, name, description)
+        Exercise.all.push(exercise)
+        return this 
+    };
+
+    static getListOfExercises(id){
+        fetch(baseUrl +`/exercises`)
+        .then(resp => {
+            if (resp.status !== 200) {
+                throw new error(resp.statusText);
+            }
+            return resp.json()
+        })
+        .catch(errors => console.log(errors))
+        .then(exercises => exercises.forEach(exercise => Exercise.create(exercise.id, exercise.bodyPart, exercise.fatigueRating, exercise.name, exercise.description)))
+    }
+}
+
+
 function displayExercise(exercise){
     workoutList()
         const div = document.createElement('div');
@@ -30,7 +61,7 @@ function getWorkoutDetails(id){
     .then(workout => showWorkoutDetails(workout))
 
 }
-function renderExerciseForm(id, exercises){
+function renderExerciseForm(id){
  let div = document.querySelector('.wo');
  let form = document.createElement('div');
 //  debugger;
@@ -39,7 +70,7 @@ function renderExerciseForm(id, exercises){
  <div class="input-field"  name="exercise">
     <select id="exercise">
             <option value="" disabled selected>Choose your option</option>
-            ${exercises.map(exercise => `<option value="${exercise.id}">${exercise.name}</option>`)}
+            ${Exercise.all.map(exercise => `<option value="${exercise.id}">${exercise.name}</option>`)}
     </select>
     <label>exercise:</label>
 </div>
@@ -77,23 +108,23 @@ function exerciseFormSubmission(id){
         body: JSON.stringify(workoutExercises)
     })
     .then(resp => resp.json())
+    .then(program => getWorkoutDetails(id))
     
     form.innerHTML = ""
-    getWorkoutDetails(id)
 }
 
 
-function getListOfExercises(id){
-    fetch(baseUrl +`/exercises`)
-    .then(resp => {
-        if (resp.status !== 200) {
-            throw new error(resp.statusText);
-        }
-        return resp.json()
-    })
-    .catch(errors => console.log(errors))
-    .then(exercises => renderExerciseForm(id, exercises))
-
-}
+// function getListOfExercises(id){
+//     fetch(baseUrl +`/exercises`)
+//     .then(resp => {
+//         if (resp.status !== 200) {
+//             throw new error(resp.statusText);
+//         }
+//         return resp.json()
+//     })
+//     .catch(errors => console.log(errors))
+//     .then(exercises => renderExerciseForm(id, exercises))
+    
+// }
 
 

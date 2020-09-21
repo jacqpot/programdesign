@@ -17,7 +17,7 @@ function callOnLoad() {
     programFormContainer().innerHTML = ''
     newProgramBtn().addEventListener("click", (event) => {renderProgramForm()});
     allProgramBtn().addEventListener("click", () => {loadPrograms()});
-
+    Exercise.getListOfExercises()
       
 }
 

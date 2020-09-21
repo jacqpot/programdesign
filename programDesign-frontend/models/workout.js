@@ -58,7 +58,7 @@ function displayProgramWorkout(workout){
     add.innerText = 'Add New Exercise';
     add.id = workout.id;
     add.addEventListener('click', (e) => {
-        getListOfExercises(e.target.id)    
+        renderExerciseForm(e.target.id)    
     })
     div.id = workout.id;
     div.classList.add('wo')
