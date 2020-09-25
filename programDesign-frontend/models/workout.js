@@ -159,5 +159,7 @@ function workoutFormSubmission(){
         getProgramDetails(workout.program_id)
     });
     // debugger;
+    programList().innerHTML = ''
+    workoutList().innerHTML = ''
     workoutFormContainer().innerHTML = ""
 }

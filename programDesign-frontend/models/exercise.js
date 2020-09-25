@@ -66,17 +66,17 @@ function renderExerciseForm(id){
  let form = document.createElement('div');
 //  debugger;
  form.innerHTML = `
- <form>
- <div class="input-field"  name="exercise">
-    <select id="exercise">
-            <option value="" disabled selected>Choose your option</option>
-            ${Exercise.all.map(exercise => `<option value="${exercise.id}">${exercise.name}</option>`)}
-    </select>
-    <label>exercise:</label>
-</div>
-        <input type="hidden" id="workout_id" name="workout_id" value="${id}">
-        <input type="submit" value="Create">
-</form>
+    <form>
+    <div class="input-field"  name="exercise">
+        <select id="exercise">
+                <option value="" disabled selected>Choose your option</option>
+                ${Exercise.all.map(exercise => `<option value="${exercise.id}">${exercise.name}</option>`)}
+        </select>
+        <label>exercise:</label>
+    </div>
+            <input type="hidden" id="workout_id" name="workout_id" value="${id}">
+            <input type="submit" value="Create">
+    </form>
  `
  div.appendChild(form)
  $('select').formSelect();
@@ -115,7 +115,7 @@ function exerciseFormSubmission(id){
 
 
 // function getListOfExercises(id){
-//     fetch(baseUrl +`/exercises`)
+//     fetch(baseUrl +`/exercises`
 //     .then(resp => {
 //         if (resp.status !== 200) {
 //             throw new error(resp.statusText);
